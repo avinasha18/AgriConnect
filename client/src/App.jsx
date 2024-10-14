@@ -10,17 +10,16 @@ import CropRecommendationSystem from "./components/RecommendationSystem";
 function App() {
   return (
     <Router>
-      <div className="App">
-      <div className="AppGlass">
-        <Sidebar/>
-        <Routes>
-          <Route path='/' element={<Home/>} />
-          <Route path='/disease' element={<CropDiseaseDetection/>} />
-          <Route path='/yield' element={<CropYieldPrediction/>} />
-          <Route path="/recommendation" element={<CropRecommendationSystem/>} />
-        </Routes>
+      <div className="App py-10 px-5">
+        <div className="AppGlass">
+          <Sidebar />
+          <Routes>
+            <Route path='/' element={<CropRecommendationSystem />} />
+            <Route path='/disease' element={<CropDiseaseDetection />} />
+            <Route path='/yield' element={<CropYieldPrediction />} />
+          </Routes>
+        </div>
       </div>
-    </div>
     </Router>
   );
 }
