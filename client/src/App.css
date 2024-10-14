@@ -5,21 +5,22 @@
   --gray: #788097;
   --purple: linear-gradient(180deg, #BB67FF 0%, #C484F3 100%);
   --pink: #FF919D;
+  --blue: #001756;
   --glass: rgba(255, 255, 255, 0.54);
   --boxShadow: 0px 19px 60px rgb(0 0 0 / 8%);
   --smboxShadow: -79px 51px 60px rgba(0, 0, 0, 0.08);
-  --activeItem: #ffbb008d;
+  --activeItem: #00a6ff8d;
 }
 
 .App {
   /* padding: 0.5rem 3.5rem; */
   color: var(--black);
-  background: linear-gradient(
+  /* background: linear-gradient(
     106.37deg,
     #8fe593 29.63%,
     #d1a367 51.55%,
     #6fd48f 90.85%
-  );
+  ); */
   height: 100vh;
   display: flex;
   align-items: center;
@@ -31,7 +32,6 @@
   display: grid;
   height: 97%;
   width: 97%;
-  background: var(--glass);
   border-radius: 2rem;
   gap: 16px;
   grid-template-columns: 14rem auto;

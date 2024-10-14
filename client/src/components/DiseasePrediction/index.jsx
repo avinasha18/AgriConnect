@@ -53,12 +53,12 @@ const CropDiseaseDetection = () => {
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gradient-to-br overflow-y-auto from-green-100 via-yellow-50 to-green-100 p-8">
+    <div className="flex justify-center items-center bg-gradient-to-br overflow-y-auto from-green-100 via-yellow-50 to-green-100 p-8">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="max-w-4xl  mx-auto  rounded-xl shadow-lg overflow-hidden"
+        className="max-w-4xl mx-auto rounded-xl shadow-lg overflow-hidden"
       >
         <div className="p-8 ">
           <h1 className="text-3xl font-bold text-gray-800 mb-6">Crop Disease Detection</h1>
