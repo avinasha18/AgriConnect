@@ -1,40 +1,22 @@
-// src/AuthSlice.js
+// authSlice.js
 import { createSlice } from '@reduxjs/toolkit';
-import Cookies from 'js-cookie';
+
+const initialState = {
+    token: null,
+};
 
 const authSlice = createSlice({
     name: 'auth',
-    initialState: {
-        token: Cookies.get('token') || null,
-        user: Cookies.get('user') || null,
-        userData: JSON.parse(Cookies.get('userData') || null) || {}
-    },
+    initialState,
     reducers: {
-        loginSuccess: (state, action) => {
-            const { token, user } = action.payload;
-            state.token = token;
-            state.user = user.username;
-            state.userData = user;
-            Cookies.set('userData', JSON.stringify(user), { expires: action.payload?.cookieExpires || 7 });
-            Cookies.set('token', token, { expires: action.payload.cookieExpires || 1 });
-            Cookies.set('user', user.username, { expires: action.payload.cookieExpires || 1 });
-            Cookies.set('userId', user._id, { expires: action.payload.cookieExpires || 1 });
-
+        setToken(state, action) {
+            state.token = action.payload;
         },
-        logout: (state) => {
+        clearToken(state) {
             state.token = null;
-            state.user = null;
-            Cookies.remove('token');
-            Cookies.remove('user');
-            Cookies.remove('userData');
-        },
-        setUserData: (state, action) => {
-            state.userData = action.payload;
-            Cookies.set('userData', JSON.stringify(action.payload), { expires: action.payload?.cookieExpires || 7 });
-
         },
     },
 });
 
-export const { loginSuccess, logout, setUserData } = authSlice.actions;
+export const { setToken, clearToken } = authSlice.actions;
 export default authSlice.reducer;

@@ -1,4 +1,5 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
+import bcrypt from "bcrypt"
 
 const FarmerSchema = new mongoose.Schema({
     name: {
@@ -37,7 +38,6 @@ const FarmerSchema = new mongoose.Schema({
 
 FarmerSchema.pre('save', async function(next) {
     if (this.isModified('pin')) {
-        const bcrypt = require('bcrypt');
         const salt = await bcrypt.genSalt(10);
         this.pin = await bcrypt.hash(this.pin, salt);
     }

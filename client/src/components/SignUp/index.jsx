@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import axios from 'axios';
 
 const SignUp = () => {
     const [formData, setFormData] = useState({
@@ -12,6 +13,8 @@ const SignUp = () => {
     });
 
     const [currentPage, setCurrentPage] = useState(1);
+    const pinRefs = useRef([]);
+    const confirmPinRefs = useRef([]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -19,6 +22,45 @@ const SignUp = () => {
             ...formData,
             [name]: value,
         });
+    };
+
+    const handlePinChange = (e, index, type) => {
+        const { value } = e.target;
+        if (/^[0-9]$/.test(value)) {
+            let newPin = type === 'pin' ? formData.pin : formData.confirmPin;
+            newPin = newPin.substring(0, index) + value + newPin.substring(index + 1);
+            setFormData((prevData) => ({
+                ...prevData,
+                [type]: newPin,
+            }));
+
+            if (index < 5 && value) {
+                if (type === 'pin') {
+                    pinRefs.current[index + 1].focus();
+                } else {
+                    confirmPinRefs.current[index + 1].focus();
+                }
+            }
+        }
+    };
+
+    const handleKeyDown = (e, index, type) => {
+        if (e.key === 'Backspace') {
+            if (index > 0 && !formData[type][index]) {
+                if (type === 'pin') {
+                    pinRefs.current[index - 1].focus();
+                } else {
+                    confirmPinRefs.current[index - 1].focus();
+                }
+            } else {
+                let newPin = type === 'pin' ? formData.pin : formData.confirmPin;
+                newPin = newPin.substring(0, index) + '' + newPin.substring(index + 1);
+                setFormData((prevData) => ({
+                    ...prevData,
+                    [type]: newPin,
+                }));
+            }
+        }
     };
 
     const handleNext = () => {
@@ -29,11 +71,35 @@ const SignUp = () => {
         setCurrentPage((prevPage) => prevPage - 1);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Handle form submission, send formData to backend
-        console.log(formData);
+        if (formData.pin !== formData.confirmPin) {
+            alert('PIN and Confirm PIN do not match.');
+            return;
+        }
+
+        try {
+            const response = await axios.post('http://localhost:5000/register', formData);
+            const { token, userId } = response.data;
+
+            // Store the token in local storage or cookies
+            localStorage.setItem('token', token);
+            localStorage.setItem('userId', userId);
+
+            // Redirect the user or perform other actions
+            alert('Sign up successful!');
+            window.location.href = '/dashboard'; // Redirect to dashboard or another page
+        } catch (error) {
+            console.error('Error registering user:', error);
+            alert('Something went wrong. Please try again.');
+        }
     };
+
+    useEffect(() => {
+        if (currentPage === 3) {
+            pinRefs.current[0].focus();
+        }
+    }, [currentPage]);
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-green-400 to-blue-500">
@@ -162,17 +228,13 @@ const SignUp = () => {
                                         .map((_, index) => (
                                             <input
                                                 key={index}
+                                                ref={el => pinRefs.current[index] = el}
                                                 className="w-12 h-12 text-center text-black border-b-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 text-2xl"
-                                                type="password"
-                                                name="pin"
+                                                type="text"
                                                 maxLength={1}
                                                 value={formData.pin[index] || ''}
-                                                onChange={(e) =>
-                                                    setFormData((prevData) => ({
-                                                        ...prevData,
-                                                        pin: prevData.pin.substring(0, index) + e.target.value,
-                                                    }))
-                                                }
+                                                onChange={(e) => handlePinChange(e, index, 'pin')}
+                                                onKeyDown={(e) => handleKeyDown(e, index, 'pin')}
                                                 required
                                             />
                                         ))}
@@ -188,17 +250,13 @@ const SignUp = () => {
                                         .map((_, index) => (
                                             <input
                                                 key={index}
+                                                ref={el => confirmPinRefs.current[index] = el}
                                                 className="w-12 h-12 text-center text-black border-b-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 text-2xl"
-                                                type="password"
-                                                name="confirmPin"
+                                                type="text"
                                                 maxLength={1}
                                                 value={formData.confirmPin[index] || ''}
-                                                onChange={(e) =>
-                                                    setFormData((prevData) => ({
-                                                        ...prevData,
-                                                        confirmPin: prevData.confirmPin.substring(0, index) + e.target.value,
-                                                    }))
-                                                }
+                                                onChange={(e) => handlePinChange(e, index, 'confirmPin')}
+                                                onKeyDown={(e) => handleKeyDown(e, index, 'confirmPin')}
                                                 required
                                             />
                                         ))}

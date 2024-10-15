@@ -1,4 +1,4 @@
-import { Farmer } from "../models/User";
+import { Farmer } from "../models/User.js";
 
 export const createFarmer = async (req, res) => {
     const { name, phone, location, farmSize, experience } = req.body;
