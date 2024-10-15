@@ -1,13 +1,57 @@
-// models/Crop.js
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
-const cropSchema = new mongoose.Schema({
-  farmer: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  cropType: { type: String, required: true },
-  quantity: { type: Number, required: true },
-  price: { type: Number, required: true },
-  description: { type: String },
-  listedAt: { type: Date, default: Date.now },
+const CropSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  type: {
+    type: String,
+    required: true,
+  },
+  season: {
+    type: String,
+    required: true,
+  },
+  averageYield: {
+    type: Number,
+    required: true,
+  },
+  growingConditions: {
+    soilType: {
+      type: String,
+    },
+    temperature: {
+      min: {
+        type: Number,
+      },
+      max: {
+        type: Number,
+      },
+    },
+    rainfall: {
+      type: Number,
+    },
+  },
+  pests: [{
+    type: String,
+  }],
+  diseases: [{
+    type: String,
+  }],
+  farmer: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Farmer',
+  },
+  status: {
+    type: String,
+    enum: ['cultivating', 'completed', 'sold'], // Status of the crop
+    default: 'cultivating',
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
-export default mongoose.model('Crop', cropSchema);
+export const Crop = mongoose.model('Crop', CropSchema);
