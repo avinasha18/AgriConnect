@@ -24,7 +24,8 @@ router.post('/register', async (req, res) => {
     }
 
     // Hash the PIN
-    const hashedPin = await bcrypt.hash(pin, 12);
+
+    const hashedPin = await bcrypt.hash(pin, 10);
     console.log('Hashed PIN:', hashedPin);
 
     // Create a new user
@@ -67,9 +68,8 @@ router.post('/login', async (req, res) => {
     }
 
     const isPasswordCorrect = await bcrypt.compare(pin, user.pin);
-    console.log('PIN Comparison Result:', isPasswordCorrect);
 
-    if (!isPasswordCorrect) {
+    if (isPasswordCorrect) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 

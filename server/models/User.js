@@ -36,14 +36,6 @@ const FarmerSchema = new mongoose.Schema({
     },
 });
 
-FarmerSchema.pre('save', async function(next) {
-    if (this.isModified('pin')) {
-        const salt = await bcrypt.genSalt(10);
-        this.pin = await bcrypt.hash(this.pin, salt);
-    }
-    next();
-});
-
 const CustomerSchema = new mongoose.Schema({
   name: {
       type: String,
