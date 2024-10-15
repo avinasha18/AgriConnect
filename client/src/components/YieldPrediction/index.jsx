@@ -48,14 +48,14 @@ const CropYieldPrediction = () => {
   };
 
   return (
-    <div className="flex items-center bg-gradient-to-br from-green-100 via-yellow-50 to-green-100 p-8 overflow-y-auto">
+    <div className="flex bg-[#EEFFEF] items-center p-8 overflow-y-auto">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="max-w-4xl mx-auto  rounded-xl shadow-lg overflow-hidden"
       >
-        <div className="p-8">
+        <div className="p-8 bg-gradient-to-br from-green-100 via-yellow-50 to-green-100 ">
           <h1 className="text-3xl font-bold text-gray-800 mb-6">Crop Yield Prediction</h1>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

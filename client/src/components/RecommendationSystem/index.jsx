@@ -1,4 +1,3 @@
-// CropRecommendationSystem.jsx
 import React, { useState } from 'react';
 import { UilSpinnerAlt, UilCheckCircle, UilWater, UilBrightnessLow } from '@iconscout/react-unicons';
 import { motion } from 'framer-motion';
@@ -52,9 +51,10 @@ const CropRecommendationSystem = () => {
       ],
     });
   };
+
   const fetchWeatherData = async (latitude, longitude) => {
     const response = await axios.get(`http://api.weatherapi.com/v1/current.json?key=8486f0f9386945cc97f154711241410&q=${latitude},${longitude}`);
-    console.log(response.data)
+    console.log(response.data);
     return response.data.current;
   };
 
@@ -78,42 +78,40 @@ const CropRecommendationSystem = () => {
       throw error;
     }
   };
-  console.log(formData)
-  
-const fetchLocationData = async () => {
-  setLoading(true);
-  try {
-    const position = await new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(resolve, reject);
-    });
-    const { latitude, longitude } = position.coords;
-    const weatherData = await fetchWeatherData(latitude, longitude)
 
-    const  soilData = await fetchSoilData(latitude, longitude)
-    
+  const fetchLocationData = async () => {
+    setLoading(true);
+    try {
+      const position = await new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject);
+      });
+      const { latitude, longitude } = position.coords;
+      const weatherData = await fetchWeatherData(latitude, longitude);
+    //   const soilData = await fetchSoilData(latitude, longitude);
 
-    const { temp_c, humidity } = weatherData;
-    console.log(weatherData,'westhr')
-    
-    // Assuming the soil data structure based on Ambee API documentation
-    const { nitrogen, phosphorus, potassium, ph } = soilData.data[0];
+      const { temp_c, humidity } = weatherData;
+      console.log(temp_c,humidity)
+      console.log(weatherData, 'weather');
 
-    setFormData({
-      nitrogen,
-      phosphorus,
-      potassium,
-      temperature: temp_c,
-      humidity,
-      ph,
-      rainfall: 0, // Rainfall data might not be available in the current response
-    });
-  } catch (error) {
-    console.error('Error fetching data:', error);
-  } finally {
-    setLoading(false);
-  }
-};
+      // Assuming the soil data structure based on Ambee API documentation
+      const { nitrogen, phosphorus, potassium, ph } = soilData.data[0];
 
+      setFormData(prevState => ({
+        ...prevState,
+        nitrogen,
+        phosphorus,
+        potassium,
+        temperature: temp_c,
+        humidity,
+        ph,
+        rainfall: 0, // Rainfall data might not be available in the current response
+      }));
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const nutrientChartData = {
     labels: ['Nitrogen', 'Phosphorus', 'Potassium'],
