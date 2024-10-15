@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import {  UilSpinnerAlt, UilCheckCircle, UilWater, UilBrightnessLow } from '@iconscout/react-unicons';
+import { UilSpinnerAlt, UilCheckCircle, UilWater, UilBrightnessLow } from '@iconscout/react-unicons';
 import { motion } from 'framer-motion';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import axios from 'axios';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -51,6 +52,67 @@ const CropRecommendationSystem = () => {
     });
   };
 
+  const fetchWeatherData = async (latitude, longitude) => {
+    const response = await axios.get(`http://api.weatherapi.com/v1/current.json?key=8486f0f9386945cc97f154711241410&q=${latitude},${longitude}`);
+    console.log(response.data);
+    return response.data.current;
+  };
+
+  const fetchSoilData = async (latitude, longitude) => {
+    try {
+      const apiKey = 'a00998e3464ba64362167d170b6c4647572980418c61b2a4036163a3c6a20e6c';
+      const response = await axios.get(`https://api.getambee.com/v2/soil`, {
+        params: {
+          lat: latitude,
+          lng: longitude,
+        },
+        headers: {
+          'x-api-key': apiKey,
+          'Content-type': 'application/json'
+        }
+      });
+      console.log('Soil data:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching soil data:', error);
+      throw error;
+    }
+  };
+
+  const fetchLocationData = async () => {
+    setLoading(true);
+    try {
+      const position = await new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject);
+      });
+      const { latitude, longitude } = position.coords;
+      const weatherData = await fetchWeatherData(latitude, longitude);
+    //   const soilData = await fetchSoilData(latitude, longitude);
+
+      const { temp_c, humidity } = weatherData;
+      console.log(temp_c,humidity)
+      console.log(weatherData, 'weather');
+
+      // Assuming the soil data structure based on Ambee API documentation
+      const { nitrogen, phosphorus, potassium, ph } = soilData.data[0];
+
+      setFormData(prevState => ({
+        ...prevState,
+        nitrogen,
+        phosphorus,
+        potassium,
+        temperature: temp_c,
+        humidity,
+        ph,
+        rainfall: 0, // Rainfall data might not be available in the current response
+      }));
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const nutrientChartData = {
     labels: ['Nitrogen', 'Phosphorus', 'Potassium'],
     datasets: [
@@ -72,7 +134,7 @@ const CropRecommendationSystem = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="max-w-4xl mx-auto  rounded-xl shadow-lg overflow-hidden"
+        className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden"
       >
         <div className="p-8">
           <h1 className="text-3xl font-bold text-gray-800 mb-6">Crop Recommendation System</h1>
@@ -163,6 +225,20 @@ const CropRecommendationSystem = () => {
                 />
               </div>
             </div>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              type="button"
+              onClick={fetchLocationData}
+              className="w-full bg-gradient-to-r from-green-400 to-blue-500 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out mb-4"
+              disabled={loading}
+            >
+              {loading ? (
+                <UilSpinnerAlt className="animate-spin h-5 w-5 mr-3 inline-block" />
+              ) : (
+                'Fetch Data Based on Location'
+              )}
+            </motion.button>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
