@@ -6,6 +6,8 @@ import config from './config.js';
 import authRoutes from './routes/authRoutes.js';
 import cropRoutes from './routes/cropRoutes.js';
 import marketRoutes from './routes/marketRoutes.js';
+import farmerRoutes from "./routes/farmerRoutes.js";
+import customerRoutes from "./routes/customerRoutes.js"
 
 const app = express();
 
@@ -19,9 +21,10 @@ mongoose.connect(config.MONGODB_URI, {
 .then(() => console.log('Connected to MongoDB'))
 .catch((err) => console.error('MongoDB connection error:', err));
 
-app.use('/api/auth', authRoutes);
-app.use('/api/crops', cropRoutes);
-app.use('/api/market', marketRoutes);
+app.use('/auth', authRoutes);
+app.use('/crops', cropRoutes);
+app.use('/farmers', farmerRoutes);
+app.use('/customers', customerRoutes)
 
 app.listen(config.PORT, () => {
   console.log(`Server running on port ${config.PORT}`);

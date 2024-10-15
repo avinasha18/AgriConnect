@@ -1,14 +1,68 @@
-// models/User.js
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  location: { type: String, required: true },
-  farmSize: { type: Number, required: true },
-  mainCrops: [{ type: String }],
-  createdAt: { type: Date, default: Date.now },
+const FarmerSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true,
+    },
+    phone: {
+        type: String,
+        required: true,
+    },
+    location: {
+        type: String,
+        required: true,
+    },
+    farmSize: {
+        type: Number, // Size of the farm in acres or hectares
+        required: true,
+    },
+    crops: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Crop', // Assuming you have a Product model
+    }],
+    experience: {
+        type: Number, // Years of farming experience
+        required: true,
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
 });
 
-export default mongoose.model('User', userSchema);
+const CustomerSchema = new mongoose.Schema({
+  name: {
+      type: String,
+      required: true,
+  },
+  phone: {
+      type: String,
+      required: true,
+  },
+  location: {
+      type: String,
+      required: true,
+  },
+  preferredProducts: [{
+      type: String, // List of preferred products
+  }],
+  purchaseHistory: [{
+      productId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Crop',
+      },
+      date: {
+          type: Date,
+          default: Date.now,
+      },
+  }],
+  createdAt: {
+      type: Date,
+      default: Date.now,
+  },
+});
+
+export const Customer = mongoose.model('Customer', CustomerSchema);
+
+export const Farmer = mongoose.model('Farmer', FarmerSchema);
