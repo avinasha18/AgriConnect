@@ -1,29 +1,29 @@
 
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Sidebar from "./components/Sidebar";
-import Home from "./components/Home";
+import { useSelector } from "react-redux";
+import { Route, Routes } from "react-router-dom";
+import { setAuthToken } from "./hooks/globalAuth";
+import RouteManagement from "./components/RouteManagement";
+import Login from "./components/Login";
+import SignUp from "./components/SignUp";
 import './App.css'
-import CropDiseaseDetection from "./components/DiseasePrediction";
-import CropYieldPrediction from "./components/YieldPrediction";
-import CropRecommendationSystem from "./components/RecommendationSystem";
-import Dashboard from "./components/Dashboard";
 function App() {
-  return (
-    <Router>
-      <div className="App py-10">
-        <div className="AppGlass">
-          <Sidebar />
-          <Routes>
-            <Route path='/recommendation' element={<CropRecommendationSystem />} />
-            <Route path='/disease' element={<CropDiseaseDetection />} />
-            <Route path='/yield' element={<CropYieldPrediction />} />
-            <Route path='/' element={<Dashboard />} />
+  const islogin = useSelector((state) => state.auth.token);
+  setAuthToken(islogin);
 
-          </Routes>
-        </div>
-      </div>
-    </Router>
+
+  return (
+    <Routes>
+      <Route
+        path="/signup"
+        element={!islogin && <SignUp /> }
+      />
+      <Route
+        path="/login"
+        element={!islogin && <Login /> }
+      />
+      <Route path="/*" element={<RouteManagement islogin={islogin} />} />
+    </Routes>
   );
 }
 

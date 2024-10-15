@@ -25,10 +25,23 @@ const FarmerSchema = new mongoose.Schema({
         type: Number, // Years of farming experience
         required: true,
     },
+    pin: {
+        type: String,
+        required: true,
+    },
     createdAt: {
         type: Date,
         default: Date.now,
     },
+});
+
+FarmerSchema.pre('save', async function(next) {
+    if (this.isModified('pin')) {
+        const bcrypt = require('bcrypt');
+        const salt = await bcrypt.genSalt(10);
+        this.pin = await bcrypt.hash(this.pin, salt);
+    }
+    next();
 });
 
 const CustomerSchema = new mongoose.Schema({

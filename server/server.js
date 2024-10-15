@@ -24,7 +24,7 @@ mongoose.connect(config.MONGODB_URI, {
 app.use('/auth', authRoutes);
 app.use('/crops', cropRoutes);
 app.use('/farmers', farmerRoutes);
-app.use('/customers', customerRoutes)
+app.use('/customers', customerRoutes);
 
 app.listen(config.PORT, () => {
   console.log(`Server running on port ${config.PORT}`);
