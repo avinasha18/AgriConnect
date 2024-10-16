@@ -53,7 +53,7 @@ const Sidebar = () => {
   return (
     <div className={`w-64 bg-white shadow-md flex flex-col items-center py-8 space-y-8 transition-width duration-300 ease-in-out ${expanded ? '' : 'w-20'}`}>
       <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-xl animate-pulse">
-        {expanded ? 'Agri Connect' : 'AC'}
+        {expanded ? 'AC' : 'AC'}
       </div>
       <div className="flex items-center justify-center w-full mt-4">
         <button onClick={toggleSidebar} className="text-gray-600 hover:text-green-600 transition-all duration-300 ease-in-out">

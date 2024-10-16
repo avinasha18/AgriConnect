@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { 
+import {
   AreaChart, Area, PieChart, Pie, Cell, LineChart, Line,
-  XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer 
+  XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
-import { 
-  Cloud, Leaf, DollarSign, Droplet, Sun, Wind, 
+import {
+  Cloud, Leaf, DollarSign, Droplet, Sun, Wind,
   Thermometer, Calendar, Plus, ChevronDown, Settings, LogOut
 } from 'lucide-react';
+import axios from 'axios';
 
 // Mock data
 const farmActivityData = [
@@ -43,7 +44,7 @@ const farmingHabits = [
 ];
 
 const Card = ({ children, className = '' }) => (
-  <motion.div 
+  <motion.div
     className={`bg-white rounded-xl shadow-md overflow-hidden ${className}`}
     whileHover={{ scale: 1.02 }}
     transition={{ type: "spring", stiffness: 300 }}
@@ -76,7 +77,7 @@ const SidebarIcon = ({ icon: Icon, active }) => (
   </div>
 );
 
-const Calendarco = ({ month, year, activeDays }) => {
+const CalendarCon = ({ month, year, activeDays, onDayClick }) => {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const firstDay = new Date(year, month, 1).getDay();
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
@@ -90,10 +91,11 @@ const Calendarco = ({ month, year, activeDays }) => {
         <div key={`empty-${i}`} className="h-8"></div>
       ))}
       {days.map(day => (
-        <div 
-          key={day} 
-          className={`h-8 flex items-center justify-center rounded-full text-sm
+        <div
+          key={day}
+          className={`h-8 flex items-center justify-center rounded-full text-sm cursor-pointer
             ${activeDays.includes(day) ? 'bg-green-500 text-white' : 'text-gray-700'}`}
+          onClick={() => onDayClick(day)}
         >
           {day}
         </div>
@@ -104,8 +106,8 @@ const Calendarco = ({ month, year, activeDays }) => {
 
 const ProgressBar = ({ value, max, className = '' }) => (
   <div className={`w-full bg-gray-200 rounded-full h-2.5 ${className}`}>
-    <div 
-      className="bg-green-600 h-2.5 rounded-full" 
+    <div
+      className="bg-green-600 h-2.5 rounded-full"
       style={{ width: `${(value / max) * 100}%` }}
     ></div>
   </div>
@@ -113,10 +115,28 @@ const ProgressBar = ({ value, max, className = '' }) => (
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeDays, setActiveDays] = useState([1, 5, 12, 17, 23, 28]);
+
+  const handleDayClick = async (day) => {
+    // Update the active days
+    setActiveDays(prevDays => {
+      if (prevDays.includes(day)) {
+        return prevDays.filter(d => d !== day);
+      } else {
+        return [...prevDays, day];
+      }
+    });
+
+    // Send the update to the backend
+    try {
+      await axios.post('/api/update-status', { day });
+    } catch (error) {
+      console.error('Error updating status:', error);
+    }
+  };
 
   return (
     <div className="flex h-full overflow-y-auto bg-gray-100 w-full">
-      
       <div className="flex-1 p-10 overflow-auto w-full">
         <div className="flex justify-between items-center mb-8">
           <div>
@@ -125,9 +145,9 @@ const Dashboard = () => {
           </div>
           <div className="flex items-center space-x-4">
             <div className="relative">
-              <input 
-                type="text" 
-                placeholder="Search for farm data" 
+              <input
+                type="text"
+                placeholder="Search for farm data"
                 className="pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
               />
               <svg className="w-5 h-5 text-gray-500 absolute left-3 top-1/2 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -140,8 +160,46 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-8">
-          <Card className="col-span-2">
+        <div className="grid grid-cols-2 gap-4">
+
+          
+        <Card className="col-span-1">
+            <CardHeader>
+              <CardTitle>Weather Data</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={200}>
+                <LineChart data={weatherData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="day" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line type="monotone" dataKey="temperature" stroke="#8884d8" />
+                  <Line type="monotone" dataKey="humidity" stroke="#82ca9d" />
+                  <Line type="monotone" dataKey="rainfall" stroke="#ffc658" />
+                </LineChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+         
+          <Card>
+            <CardHeader>
+              <CardTitle>Your Farming Days</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex justify-between items-center mb-4">
+                <span className="font-semibold">June</span>
+                <button className="text-gray-600 hover:text-gray-800">
+                  <ChevronDown size={20} />
+                </button>
+              </div>
+              <CalendarCon month={5} year={2023} activeDays={activeDays} onDayClick={handleDayClick} />
+            </CardContent>
+          </Card>
+     
+
+          <Card className="col-span-1">
             <CardHeader>
               <CardTitle>Your Farm Activity for Today</CardTitle>
             </CardHeader>
@@ -178,21 +236,7 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Your Farming Days</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex justify-between items-center mb-4">
-                <span className="font-semibold">June</span>
-                <button className="text-gray-600 hover:text-gray-800">
-                  <ChevronDown size={20} />
-                </button>
-              </div>
-              <Calendarco month={5} year={2023} activeDays={[1, 5, 12, 17, 23, 28]} />
-            </CardContent>
-          </Card>
-
+       
           <Card>
             <CardHeader>
               <CardTitle>Crop Yield Progress</CardTitle>
@@ -250,7 +294,7 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          <Card className="col-span-2">
+          <Card className="col-span-1">
             <CardHeader className="flex justify-between items-center">
               <CardTitle>My Farming Habits</CardTitle>
               <button className="text-green-500 hover:text-green-600 flex items-center">
@@ -278,6 +322,8 @@ const Dashboard = () => {
               </div>
             </CardContent>
           </Card>
+
+         
         </div>
       </div>
     </div>
