@@ -1,4 +1,5 @@
-import axios from 'axios';  // Import axios
+// hooks/globalAuth.js
+import axios from 'axios';
 
 export const setAuthToken = (token) => {
     if (token) {

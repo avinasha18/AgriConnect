@@ -8,20 +8,20 @@ import SignUp from "./components/SignUp";
 import './App.css';
 
 function App() {
-  const islogin = useSelector((state) => state.auth.token);
-  setAuthToken(islogin);
+  const isLogin = useSelector((state) => state.auth.token);
+  setAuthToken(isLogin);
 
   return (
     <Routes>
       <Route
         path="/signup"
-        element={!islogin ? <SignUp /> : <p>Already logged in</p>}
+        element={!isLogin ? <SignUp /> : <p>Already logged in</p>}
       />
       <Route
         path="/login"
-        element={!islogin ? <Login /> : <p>Already logged in</p>}
+        element={!isLogin ? <Login /> : <p>Already logged in</p>}
       />
-      <Route path="/*" element={<RouteManagement islogin={islogin} />} />
+      <Route path="/*" element={<RouteManagement isLogin={isLogin} />} />
     </Routes>
   );
 }
