@@ -287,8 +287,8 @@ const Dashboard = () => {
             <CardHeader>
               <CardTitle>{texts[language].cropYield}</CardTitle>
             </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={200}>
+            <CardContent className='h-5/6 flex items-center justify-center'>
+              <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={cropYieldData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
