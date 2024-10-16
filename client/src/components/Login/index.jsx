@@ -1,11 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { setLoginState } from '../../hooks/authSlice';
 
 const Login = () => {
     const [phone, setPhone] = useState('');
-    const [pin, setPin] = useState(Array(6).fill('')); // to store user-entered PIN
-    const [errorMessage, setErrorMessage] = useState(''); // to display an error message if PIN is incorrect
+    const [pin, setPin] = useState(Array(6).fill(''));
+    const [errorMessage, setErrorMessage] = useState('');
     const inputRefs = useRef([]);
+    const dispatch = useDispatch();
 
     const handlePhoneChange = (e) => {
         setPhone(e.target.value);
@@ -44,13 +47,12 @@ const Login = () => {
             const response = await axios.post('http://localhost:5000/login', { phone, pin: enteredPin });
             const { token, userId } = response.data;
 
-            // Store the token in local storage or cookies
             localStorage.setItem('token', token);
             localStorage.setItem('userId', userId);
 
-            // Redirect the user or perform other actions
-            alert('Login successful!');
-            window.location.href = '/dashboard'; // Redirect to dashboard or another page
+            dispatch(setLoginState(token));
+
+            window.location.href = '/';
         } catch (error) {
             console.error('Error logging in:', error);
             setErrorMessage('Invalid credentials. Please try again.');

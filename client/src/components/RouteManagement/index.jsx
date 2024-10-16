@@ -6,18 +6,16 @@ import CropDiseaseDetection from "../DiseasePrediction";
 import CropYieldPrediction from "../YieldPrediction";
 import CropRecommendationSystem from "../RecommendationSystem";
 import Dashboard from "../Dashboard";
-
-// Mock isLogin state to demonstrate authentication logic
-const isLogin = false; // Replace this with actual authentication check
+import { useSelector } from 'react-redux';
 
 const RouteManagement = () => {
     const location = useLocation();
+    const token = useSelector((state) => state.auth.token);
 
     const ProtectedRoute = ({ isLogin, children, nextPath }) => {
         if (!isLogin) {
             return <Navigate to={`/login?nextpath=${nextPath}`} replace />;
         }
-
         return children;
     };
 
@@ -25,25 +23,30 @@ const RouteManagement = () => {
         <div className="App py-10">
             <div className="AppGlass flex">
                 <Sidebar />
+                <div className="w-full h-full">
                 <Routes>
-                    {/* Public Routes */}
                     <Route path='/recommendation' element={<CropRecommendationSystem />} />
                     <Route path='/disease' element={<CropDiseaseDetection />} />
                     <Route path='/yield' element={<CropYieldPrediction />} />
-
-                    {/* Protected Routes */}
                     <Route
                         path='/dashboard'
                         element={
-                            <ProtectedRoute isLogin={isLogin} nextPath={location.pathname}>
+                            <ProtectedRoute isLogin={!!token} nextPath={location.pathname}>
                                 <Dashboard />
                             </ProtectedRoute>
                         }
                     />
-
-                    {/* Redirect root to Dashboard */}
+                    <Route
+                        path='/home'
+                        element={
+                            <ProtectedRoute isLogin={!!token} nextPath={location.pathname}>
+                                <Home />
+                            </ProtectedRoute>
+                        }
+                    />
                     <Route path='/' element={<Navigate to='/dashboard' replace />} />
                 </Routes>
+                </div>
             </div>
         </div>
     );

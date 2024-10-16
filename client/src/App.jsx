@@ -1,15 +1,26 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { Route, Routes } from "react-router-dom";
+// In App.js or wherever you initialize your app:
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { Route, Routes, Navigate } from "react-router-dom";
 import { setAuthToken } from "./hooks/globalAuth";
 import RouteManagement from "./components/RouteManagement";
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
 import './App.css';
+import { setLoginState } from './hooks/authSlice'; // Assuming you have a Redux action for this
 
 function App() {
   const islogin = useSelector((state) => state.auth.token);
-  setAuthToken(islogin);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    // Check if token exists in localStorage
+    const token = localStorage.getItem('token');
+    if (token) {
+      setAuthToken(token);
+      dispatch(setLoginState(token));  // Dispatch Redux action to update auth state
+    }
+  }, [dispatch]);
 
   return (
     <Routes>
@@ -19,7 +30,7 @@ function App() {
       />
       <Route
         path="/login"
-        element={!islogin ? <Login /> : <p>Already logged in</p>}
+        element={!islogin ? <Login /> : <Navigate to="/dashboard" />}
       />
       <Route path="/*" element={<RouteManagement islogin={islogin} />} />
     </Routes>

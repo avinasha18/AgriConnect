@@ -10,7 +10,7 @@ export const SidebarData = [
   {
     icon: UilEstate,
     heading: 'Dashboard',
-    to: '/',
+    to: '/dashboard',
   },
   {
     icon: UilEstate,

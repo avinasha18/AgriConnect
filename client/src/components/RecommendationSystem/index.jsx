@@ -129,7 +129,7 @@ const CropRecommendationSystem = () => {
   };
 
   return (
-    <div className="flex justify-center items-center bg-gradient-to-br from-green-100 via-yellow-50 to-green-100 p-8 overflow-y-auto">
+    <div className="flex h-full justify-center items-center bg-[#7cd77c] p-8 overflow-y-auto">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
