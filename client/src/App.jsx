@@ -8,12 +8,16 @@ import Login from "./components/Login";
 import SignUp from "./components/SignUp";
 import './App.css';
 import { setLoginState } from './hooks/authSlice'; // Assuming you have a Redux action for this
+import { LanguageProvider } from "./hooks/languageContext";
 
 function App() {
-  const isLogin = useSelector((state) => state.auth.token);
+  // const isLogin = useSelector((state) => state.auth.token);
+  const token = localStorage.getItem('token')
+  const isLogin = token
   setAuthToken(isLogin);
 
   return (
+    <LanguageProvider>
     <Routes>
       <Route
         path="/signup"
@@ -25,6 +29,7 @@ function App() {
       />
       <Route path="/*" element={<RouteManagement isLogin={isLogin} />} />
     </Routes>
+    </LanguageProvider>
   );
 }
 

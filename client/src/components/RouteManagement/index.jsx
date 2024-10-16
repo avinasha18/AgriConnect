@@ -21,8 +21,8 @@ const RouteManagement = ({ isLogin }) => {
     };
 
     return (
-        <div className="App py-10">
-            <div className="AppGlass flex">
+        <div className="p-2">
+            <div className="flex">
                 <Sidebar />
                 <div className="w-full h-full">
                     <Routes>

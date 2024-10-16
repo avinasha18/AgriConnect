@@ -9,6 +9,8 @@ import {
   Thermometer, Calendar, Plus, ChevronDown, Settings, LogOut
 } from 'lucide-react';
 import axios from 'axios';
+import LanguageDropdown from './Language';
+import { useLanguage } from '../../hooks/languageContext.jsx';
 
 // Mock data
 const farmActivityData = [
@@ -116,6 +118,55 @@ const ProgressBar = ({ value, max, className = '' }) => (
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [activeDays, setActiveDays] = useState([1, 5, 12, 17, 23, 28]);
+  const { language } = useLanguage();
+
+  const texts = {
+    en: {
+      greeting: 'Hi, Farmer John!',
+      subtitle: 'Let\'s check your farm\'s activity today',
+      searchPlaceholder: 'Search for farm data',
+      upgrade: 'Upgrade',
+      weatherData: 'Weather Data',
+      farmingDays: 'Your Farming Days',
+      farmActivity: 'Your Farm Activity for Today',
+      cropYield: 'Crop Yield Progress',
+      sustainabilityScore: 'Sustainability Score',
+      farmingHabits: 'My Farming Habits',
+      addNew: 'Add New',
+      sessionsCompleted: 'Sessions completed:',
+      greatJob: 'Great job! Your farm is on track for sustainability.',
+    },
+    hi: {
+      greeting: 'नमस्ते, फार्मर जॉन!',
+      subtitle: 'आज आपके फार्म की गतिविधि देखें',
+      searchPlaceholder: 'फार्म डेटा खोजें',
+      upgrade: 'अपग्रेड करें',
+      weatherData: 'मौसम डेटा',
+      farmingDays: 'आपके फार्मिंग दिन',
+      farmActivity: 'आज आपकी फार्म गतिविधि',
+      cropYield: 'फसल उत्पादन प्रगति',
+      sustainabilityScore: 'स्थायित्व स्कोर',
+      farmingHabits: 'मेरी फार्मिंग आदतें',
+      addNew: 'नया जोड़ें',
+      sessionsCompleted: 'सत्र पूरा हुआ:',
+      greatJob: 'शाबाश! आपका फार्म स्थायित्व के लिए सही रास्ते पर है।',
+    },
+    te: {
+      greeting: 'హలో, ఫార్మర్ జాన్!',
+      subtitle: 'మీ ఫార్మ్ యొక్క చర్యలను ఈ రోజు చూడండి',
+      searchPlaceholder: 'ఫార్మ్ డేటా కోసం శోధించండి',
+      upgrade: 'అప్‌గ్రేడ్ చేయండి',
+      weatherData: 'వాతావరణ డేటా',
+      farmingDays: 'మీ ఫార్మింగ్ డేస్',
+      farmActivity: 'ఈ రోజు మీ ఫార్మ్ చర్య',
+      cropYield: 'పంట ఉత్పత్తి పురోగతి',
+      sustainabilityScore: 'స్థిరత్వ స్కోర్',
+      farmingHabits: 'నా ఫార్మింగ్ అలవాట్లు',
+      addNew: 'కొత్తది జోడించండి',
+      sessionsCompleted: 'సెషన్లు పూర్తయ్యాయి:',
+      greatJob: 'బాగుంది! మీ ఫార్మ్ స్థిరత్వం కోసం సరైన పథంలో ఉంది.',
+    },
+  };
 
   const handleDayClick = async (day) => {
     // Update the active days
@@ -140,35 +191,32 @@ const Dashboard = () => {
       <div className="flex-1 p-10 overflow-auto w-full">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-800">Hi, Farmer John!</h1>
-            <p className="text-gray-600">Let's check your farm's activity today</p>
+            <h1 className="text-3xl font-bold text-gray-800">{texts[language].greeting}</h1>
+            <p className="text-gray-600">{texts[language].subtitle}</p>
           </div>
           <div className="flex items-center space-x-4">
             <div className="relative">
               <input
                 type="text"
-                placeholder="Search for farm data"
+                placeholder={texts[language].searchPlaceholder}
                 className="pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
               />
               <svg className="w-5 h-5 text-gray-500 absolute left-3 top-1/2 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
               </svg>
             </div>
-            <button className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition duration-300">
-              Upgrade
-            </button>
+            <LanguageDropdown />
+           
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-
-          
-        <Card className="col-span-1">
+          <Card className="col-span-1">
             <CardHeader>
-              <CardTitle>Weather Data</CardTitle>
+              <CardTitle>{texts[language].weatherData}</CardTitle>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={200}>
+              <ResponsiveContainer width="100%" height={250}>
                 <LineChart data={weatherData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="day" />
@@ -182,10 +230,10 @@ const Dashboard = () => {
               </ResponsiveContainer>
             </CardContent>
           </Card>
-         
+
           <Card>
             <CardHeader>
-              <CardTitle>Your Farming Days</CardTitle>
+              <CardTitle>{texts[language].farmingDays}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex justify-between items-center mb-4">
@@ -197,11 +245,9 @@ const Dashboard = () => {
               <CalendarCon month={5} year={2023} activeDays={activeDays} onDayClick={handleDayClick} />
             </CardContent>
           </Card>
-     
-
           <Card className="col-span-1">
             <CardHeader>
-              <CardTitle>Your Farm Activity for Today</CardTitle>
+              <CardTitle>{texts[language].farmActivity}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-center h-64">
@@ -235,11 +281,9 @@ const Dashboard = () => {
               </div>
             </CardContent>
           </Card>
-
-       
           <Card>
             <CardHeader>
-              <CardTitle>Crop Yield Progress</CardTitle>
+              <CardTitle>{texts[language].cropYield}</CardTitle>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={200}>
@@ -257,7 +301,7 @@ const Dashboard = () => {
 
           <Card>
             <CardHeader>
-              <CardTitle>Sustainability Score</CardTitle>
+              <CardTitle>{texts[language].sustainabilityScore}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-center">
@@ -290,29 +334,29 @@ const Dashboard = () => {
                   </span>
                 </div>
               </div>
-              <p className="text-center mt-4 text-gray-600">Great job! Your farm is on track for sustainability.</p>
+              <p className="text-center mt-4 text-gray-600">{texts[language].greatJob}</p>
             </CardContent>
           </Card>
 
           <Card className="col-span-1">
             <CardHeader className="flex justify-between items-center">
-              <CardTitle>My Farming Habits</CardTitle>
+              <CardTitle>{texts[language].farmingHabits}</CardTitle>
               <button className="text-green-500 hover:text-green-600 flex items-center">
-                <Plus size={20} className="mr-1" /> Add New
+                <Plus size={20} className="mr-1" /> {texts[language].addNew}
               </button>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 {farmingHabits.map((habit, index) => (
                   <div key={index} className="flex items-center">
-                    <div className="bg-gray-100 p-2 rounded-full mr-4">
+                    <div className="bg-gray-600 p-2 rounded-full mr-4">
                       {habit.icon}
                     </div>
                     <div className="flex-1">
                       <div className="flex justify-between items-center mb-1">
                         <span className="font-medium">{habit.name}</span>
                         <span className="text-sm text-gray-500">
-                          Sessions completed: {habit.completedSessions}/{habit.totalSessions}
+                          {texts[language].sessionsCompleted} {habit.completedSessions}/{habit.totalSessions}
                         </span>
                       </div>
                       <ProgressBar value={habit.completedSessions} max={habit.totalSessions} />
@@ -322,8 +366,6 @@ const Dashboard = () => {
               </div>
             </CardContent>
           </Card>
-
-         
         </div>
       </div>
     </div>
