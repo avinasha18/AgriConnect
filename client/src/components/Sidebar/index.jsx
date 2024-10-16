@@ -53,7 +53,7 @@ const Sidebar = () => {
   return (
     <div className={`bg-white shadow-md flex flex-col items-center py-8 space-y-8 transition-all duration-300 ease-in-out ${expanded ? 'w-64' : 'w-20'}`}>
       {/* Sidebar Logo */}
-      <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-xl animate-pulse">
+      <div className={`flex items-center justify-center text-white font-bold text-xl transition-all duration-300 ease-in-out ${expanded ? 'w-48 h-12 bg-green-500 px-4 rounded-2xl' : 'w-12 h-12 bg-green-500 rounded-full animate-pulse'}`}>
         {expanded ? 'Agri Connect' : 'AC'}
       </div>
       

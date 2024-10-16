@@ -10,29 +10,20 @@ import './App.css';
 import { setLoginState } from './hooks/authSlice'; // Assuming you have a Redux action for this
 
 function App() {
-  const islogin = useSelector((state) => state.auth.token);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    // Check if token exists in localStorage
-    const token = localStorage.getItem('token');
-    if (token) {
-      setAuthToken(token);
-      dispatch(setLoginState(token));  // Dispatch Redux action to update auth state
-    }
-  }, [dispatch]);
+  const isLogin = useSelector((state) => state.auth.token);
+  setAuthToken(isLogin);
 
   return (
     <Routes>
       <Route
         path="/signup"
-        element={!islogin ? <SignUp /> : <p>Already logged in</p>}
+        element={!isLogin ? <SignUp /> : <p>Already logged in</p>}
       />
       <Route
         path="/login"
-        element={!islogin ? <Login /> : <Navigate to="/dashboard" />}
+        element={!isLogin ? <Login /> : <p>Already logged in</p>}
       />
-      <Route path="/*" element={<RouteManagement islogin={islogin} />} />
+      <Route path="/*" element={<RouteManagement isLogin={isLogin} />} />
     </Routes>
   );
 }

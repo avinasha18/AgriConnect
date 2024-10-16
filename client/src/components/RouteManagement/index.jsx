@@ -1,18 +1,18 @@
 import React from "react";
 import { Route, Routes, Navigate, useLocation } from "react-router-dom";
+import { useSelector } from 'react-redux';
 import Sidebar from '../Sidebar';
 import Home from "../Home";
 import CropDiseaseDetection from "../DiseasePrediction";
 import CropYieldPrediction from "../YieldPrediction";
 import CropRecommendationSystem from "../RecommendationSystem";
 import Dashboard from "../Dashboard";
-import { useSelector } from 'react-redux';
 
-const RouteManagement = () => {
+const RouteManagement = ({ isLogin }) => {
     const location = useLocation();
     const token = useSelector((state) => state.auth.token);
 
-    const ProtectedRoute = ({ isLogin, children, nextPath }) => {
+    const ProtectedRoute = ({ children, nextPath }) => {
         if (!isLogin) {
             return <Navigate to={`/login?nextpath=${nextPath}`} replace />;
         }
@@ -31,7 +31,7 @@ const RouteManagement = () => {
                     <Route
                         path='/dashboard'
                         element={
-                            <ProtectedRoute isLogin={!!token} nextPath={location.pathname}>
+                            <ProtectedRoute nextPath={location.pathname}>
                                 <Dashboard />
                             </ProtectedRoute>
                         }
