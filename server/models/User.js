@@ -19,8 +19,8 @@ const FarmerSchema = new mongoose.Schema({
         required: true,
     },
     crops: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Crop', // Assuming you have a Product model
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Crop', // Assuming you have a Product model
     }],
     experience: {
         type: Number, // Years of farming experience
@@ -37,35 +37,39 @@ const FarmerSchema = new mongoose.Schema({
 });
 
 const CustomerSchema = new mongoose.Schema({
-  name: {
-      type: String,
-      required: true,
-  },
-  phone: {
-      type: String,
-      required: true,
-  },
-  location: {
-      type: String,
-      required: true,
-  },
-  preferredProducts: [{
-      type: String, // List of preferred products
-  }],
-  purchaseHistory: [{
-      productId: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'Crop',
-      },
-      date: {
-          type: Date,
-          default: Date.now,
-      },
-  }],
-  createdAt: {
-      type: Date,
-      default: Date.now,
-  },
+    name: {
+        type: String,
+        required: true,
+    },
+    phone: {
+        type: String,
+        required: true,
+    },
+    location: {
+        type: String,
+        required: true,
+    },
+    preferredProducts: [{
+        type: String, // List of preferred products
+    }],
+    purchaseHistory: [{
+        productId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Crop',
+        },
+        date: {
+            type: Date,
+            default: Date.now,
+        },
+    }],
+    pin: {
+        type: String,  // PIN should be stored securely (hashed, if possible)
+        required: true,
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
 });
 
 export const Customer = mongoose.model('Customer', CustomerSchema);

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Lottie from 'lottie-react';
 import farmerAnimation from './farmerAnimation.json'; // Replace with your Lottie animation file
-import { User, Phone, MapPin, Leaf, Calendar, Lock, Edit, PlusCircle } from 'lucide-react';
+import { User, Phone, MapPin, Leaf, Calendar, Lock, Edit, PlusCircle, BarChart } from 'lucide-react';
 
 const Profile = () => {
     const [farmer, setFarmer] = useState(null);
@@ -18,12 +18,12 @@ const Profile = () => {
         crops: [],
     });
 
-    const farmerID = localStorage.getItem('userId')
+    const farmerID = localStorage.getItem('userId');
 
     useEffect(() => {
         const fetchFarmerProfile = async () => {
             try {
-                const response = await axios.get(`http://localhost:5000/farmers/profile/${farmerID}`); // Pass farmerID in the URL
+                const response = await axios.get(`http://localhost:5000/farmers/profile/${farmerID}`);
                 setFarmer(response.data);
                 setEditedFarmer(response.data);
             } catch (error) {
@@ -34,7 +34,6 @@ const Profile = () => {
         fetchFarmerProfile();
     }, []);
 
-
     const handleInputChange = (e) => {
         setEditedFarmer({ ...editedFarmer, [e.target.name]: e.target.value });
     };
@@ -43,8 +42,8 @@ const Profile = () => {
         if (newCrop) {
             try {
                 const cropData = {
-                    name: newCrop, // You may want to collect additional details for the crop
-                    type: "Grain", // Example placeholder, replace with actual crop details
+                    name: newCrop,
+                    type: "Grain",
                     season: "Winter",
                     averageYield: 50,
                     growingConditions: {
@@ -55,17 +54,15 @@ const Profile = () => {
                     farmerId: farmer._id
                 };
 
-                // Send request to backend to create crop and associate it with the farmer
                 const response = await axios.post(`http://localhost:5000/crops/${farmer._id}`, cropData);
                 const createdCrop = response.data;
 
-                // Update farmer's crop list with the new crop
                 setEditedFarmer((prevFarmer) => ({
                     ...prevFarmer,
-                    crops: [...prevFarmer.crops, createdCrop.name], // Assuming 'name' is what you display
+                    crops: [...prevFarmer.crops, createdCrop.name],
                 }));
 
-                setNewCrop(''); // Clear the input field after adding
+                setNewCrop('');
             } catch (error) {
                 console.error("Error adding crop:", error);
             }
@@ -74,8 +71,8 @@ const Profile = () => {
 
     const handleSave = async () => {
         try {
-            await axios.put(`http://localhost:5000/farmers/profile/${farmerID}`, editedFarmer); // PUT request to update farmer's profile
-            setFarmer(editedFarmer); // Update state with edited farmer profile
+            await axios.put(`http://localhost:5000/farmers/profile/${farmerID}`, editedFarmer);
+            setFarmer(editedFarmer);
             setIsEditing(false);
         } catch (error) {
             console.error(error);
@@ -87,59 +84,27 @@ const Profile = () => {
     }
 
     return (
-        <div className='flex flex-col p-10'>
+        <div className='flex flex-col'>
             <button
                 className="mt-4 bg-blue-500 text-white px-4 py-2 rounded fixed right-10"
                 onClick={() => setIsEditing(true)}
             >
                 <p className='flex flex-row'><Edit className="mr-2" /> Edit Profile</p>
             </button>
-            <div className="max-w-4xl flex flex-col items-center justify-center mx-auto p-16 gap-10 bg-white">
-
-                <div className="flex items-center justify-center mb-6">
-                    <Lottie animationData={farmerAnimation} loop={true} className="w-60 h-60" />
-                </div>
-
+            <div className="flex flex-col items-center justify-center gap-10 bg-white">
                 {/* Farmer Profile Information */}
                 {!isEditing ? (
                     <div className='w-full'>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 w-full">
-                            <div className="flex items-center w-60">
-                                <User className="mr-3 text-gray-600" />
-                                <div className="flex flex-row items-center gap-2">
-                                    <h3 className="text-lg font-semibold">Name</h3>
-                                    <p className="text-gray-700">{farmer.name}</p>
-                                </div>
+                        <div className='bg-black flex flex-row text-white p-10 gap-10'>
+                            <div className="flex items-center justify-center mb-6 z-20 fixed left-1/4 border-8 border-gray-100 rounded-xl">
+                                <Lottie animationData={farmerAnimation} loop={true} className="w-48 h-48" />
                             </div>
-                            <div className="flex items-center w-60">
-                                <Phone className="mr-3 text-gray-600" />
-                                <div className="flex flex-row items-center gap-2">
-                                    <h3 className="text-lg font-semibold">Phone</h3>
-                                    <p className="text-gray-700">{farmer.phone}</p>
-                                </div>
+                            <div className='flex flex-col px-[22rem] pt-20'>
+                                <p className='text-2xl font-semibold'>{farmer.name}</p>
+                                <p className='text-lg'>{farmer.location}</p>
                             </div>
-                            <div className="flex items-center w-60">
-                                <MapPin className="mr-3 text-gray-600" />
-                                <div className="flex flex-row items-center gap-2">
-                                    <h3 className="text-lg font-semibold">Location</h3>
-                                    <p className="text-gray-700">{farmer.location}</p>
-                                </div>
-                            </div>
-                            <div className="flex items-center w-60">
-                                <Leaf className="mr-3 text-gray-600" />
-                                <div className="flex flex-row items-center gap-2">
-                                    <h3 className="text-lg font-semibold">Farm Size</h3>
-                                    <p className="text-gray-7 w-6000">{farmer.farmSize} acres</p>
-                                </div>
-                            </div>
-                            <div className="flex items-center w-60">
-                                <Calendar className="mr-3 text-gray-600" />
-                                <div className="flex flex-row items-center gap-2">
-                                    <h3 className="text-lg font-semibold">Experience</h3>
-                                    <p className="text-gray-700">{farmer.experience} years</p>
-                                </div>
-                            </div>
-
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 w-full p-20">
                             {/* Crops List */}
                             <div className="col-span-2">
                                 <h3 className="text-lg font-semibold">Crops</h3>
@@ -148,14 +113,28 @@ const Profile = () => {
                                         {farmer.crops.map((crop, index) => (
                                             <div
                                                 key={index}
-                                                className="bg-white rounded-lg shadow-lg pt-4 pl-4 px-10 py-10 transition-transform transform hover:scale-105"
+                                                className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 hover:scale-105 transform"
                                             >
-                                                <h3 className="text-xl font-semibold text-gray-800 mb-2">{crop.name}</h3>
-                                                <p className="text-gray-600">{crop.type}</p>
+                                                <div className="flex flex-col items-start gap-2">
+                                                    <h3 className="text-xl font-bold text-gray-800 mb-2 flex items-center">
+                                                        <Leaf className="mr-2 text-green-500" /> {crop.name} {/* Access crop.name */}
+                                                    </h3>
+                                                    <p className="text-gray-600 flex items-center">
+                                                        <BarChart className="mr-2 text-gray-500" size={18} />
+                                                        Type: {crop.type} {/* Access crop.type */}
+                                                    </p>
+
+                                                    <p className="text-gray-600 flex items-center">
+                                                        <Calendar className="mr-2 text-gray-500" size={18} /> Season: {crop.season} {/* Access crop.season */}
+                                                    </p>
+                                                    <p className="text-gray-600 flex items-center">
+                                                        <Lock className="mr-2 text-gray-500" size={18} /> Status: {crop.status} {/* Access crop.status */}
+                                                    </p>
+                                                </div>
                                             </div>
                                         ))}
-                                    </div>
 
+                                    </div>
                                 ) : (
                                     <p className="text-gray-700">No crops added.</p>
                                 )}
