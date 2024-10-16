@@ -80,7 +80,7 @@ const Sidebar = () => {
   }, [location]);
 
   return (
-    <div className={`bg-white border border-r-2 overflow-y-auto  shadow-md flex flex-col items-center py-8 space-y-8 transition-all duration-300 ease-in-out ${expanded ? 'w-64' : 'w-20'}`}>
+    <div className={`bg-white border border-r-2 shadow-md flex flex-col items-center py-8 space-y-8 transition-all duration-300 ease-in-out ${expanded ? 'w-64' : 'w-20'} h-screen overflow-hidden`}>
       {/* Sidebar Logo */}
       <div className={`flex items-center justify-center text-white font-bold text-xl transition-all duration-300 ease-in-out ${expanded ? 'w-48 h-12 bg-green-500 px-4 rounded-2xl' : 'w-12 h-12 bg-green-500 rounded-full animate-pulse'}`}>
         {expanded ? 'Agri Connect' : 'AC'}

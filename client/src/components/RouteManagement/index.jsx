@@ -9,10 +9,10 @@ import CropRecommendationSystem from "../RecommendationSystem";
 import Dashboard from "../Dashboard";
 import VoiceRecognition from "./VoiceRecognition";
 
-const RouteManagement = ({ isLogin }) => {
+const RouteManagement = ({  }) => {
     const location = useLocation();
-    const token = useSelector((state) => state.auth.token);
-
+    const token = localStorage.getItem('token');
+    const isLogin = token
     const ProtectedRoute = ({ children, nextPath }) => {
         if (!isLogin) {
             return <Navigate to={`/login?nextpath=${nextPath}`} replace />;
