@@ -8,6 +8,7 @@ import CropYieldPrediction from "../YieldPrediction";
 import CropRecommendationSystem from "../RecommendationSystem";
 import Dashboard from "../Dashboard";
 import VoiceRecognition from "./VoiceRecognition";
+import Profile from "../Profile";
 
 const RouteManagement = ({  }) => {
     const location = useLocation();
@@ -21,7 +22,7 @@ const RouteManagement = ({  }) => {
     };
 
     return (
-        <div className="p-2">
+        <div>
             <div className="flex">
                 <Sidebar />
                 <div className="w-full h-full">
@@ -34,6 +35,14 @@ const RouteManagement = ({  }) => {
                             element={
                                 <ProtectedRoute nextPath={location.pathname}>
                                     <Dashboard />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path='/profile'
+                            element={
+                                <ProtectedRoute nextPath={location.pathname}>
+                                    <Profile />
                                 </ProtectedRoute>
                             }
                         />

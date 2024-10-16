@@ -29,6 +29,7 @@ const Sidebar = () => {
 
   const texts = {
     en: {
+      profile: 'Profile',
       dashboard: 'Dashboard',
       recommendation: 'Recommendation',
       disease: 'Crop Disease',
@@ -37,6 +38,7 @@ const Sidebar = () => {
       logout: 'Logout',
     },
     hi: {
+      profile: 'डैशबोर्ड',
       dashboard: 'डैशबोर्ड',
       recommendation: 'सिफारिश',
       disease: 'फसल रोग',
@@ -45,6 +47,7 @@ const Sidebar = () => {
       logout: 'लॉगआउट',
     },
     te: {
+      profile: 'డాష్‌బోర్డ్',
       dashboard: 'డాష్‌బోర్డ్',
       recommendation: 'సిఫార్సు',
       disease: 'పంట రోగం',
@@ -76,11 +79,13 @@ const Sidebar = () => {
       setActiveTab('price');
     } else if (path === '/yield') {
       setActiveTab('yield');
+    } else if (path === '/profile') {
+      setActiveTab('profile');
     }
   }, [location]);
 
   return (
-    <div className={`bg-white border border-r-2 shadow-md flex flex-col items-center py-8 space-y-8 transition-all duration-300 ease-in-out ${expanded ? 'w-64' : 'w-20'} h-screen overflow-hidden`}>
+    <div className={`bg-white border border-r-2 shadow-md flex flex-col py-8 px-2 space-y-8 transition-all duration-300 ease-in-out ${expanded ? 'w-64' : 'w-20'} h-screen overflow-hidden`}>
       {/* Sidebar Logo */}
       <div className={`flex items-center justify-center text-white font-bold text-xl transition-all duration-300 ease-in-out ${expanded ? 'w-48 h-12 bg-green-500 px-4 rounded-2xl' : 'w-12 h-12 bg-green-500 rounded-full animate-pulse'}`}>
         {expanded ? 'Agri Connect' : 'AC'}
@@ -94,6 +99,7 @@ const Sidebar = () => {
       </div>
 
       {/* Sidebar Items */}
+      <SidebarIcon to='/profile' icon={UilEstate} active={activeTab === 'profile'} text={texts[language].profile} expanded={expanded} />
       <SidebarIcon to='/dashboard' icon={UilEstate} active={activeTab === 'dashboard'} text={texts[language].dashboard} expanded={expanded} />
       <SidebarIcon to='/recommendation' icon={UilClipboardAlt} active={activeTab === 'recommendation'} text={texts[language].recommendation} expanded={expanded} />
       <SidebarIcon to='/disease' icon={UilUsersAlt} active={activeTab === 'disease'} text={texts[language].disease} expanded={expanded} />
