@@ -1,4 +1,4 @@
-import { Customer } from "../models/User";
+import { Customer } from "../models/User.js";
 
 export const createCustomer = async (req, res) => {
     const { name, phone, location, preferredProducts } = req.body;

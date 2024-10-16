@@ -1,61 +1,35 @@
 // Sidebar.jsx
 import React, { useState } from "react";
-// import Logo from "../imgs/logo.png";
-import { UilSignOutAlt, UilBars } from "@iconscout/react-unicons";
-import { SidebarData } from "../../Data";
-import { motion } from "framer-motion";
+import { 
+  Cloud, Leaf, DollarSign, 
+  Thermometer, Settings, LogOut
+} from 'lucide-react';
 import './index.css'
-import { Link } from "react-router-dom";
+
+const SidebarIcon = ({ icon: Icon, active }) => (
+  <div className={`p-3 rounded-full ${active ? 'bg-green-100' : 'hover:bg-gray-100'}`}>
+    <Icon size={24} className={active ? 'text-green-600' : 'text-gray-600'} />
+  </div>
+);
+
 const Sidebar = () => {
-  const [selected, setSelected] = useState(0);
+  const [activeTab, setActiveTab] = useState('dashboard');
 
-  const [expanded, setExpaned] = useState(true)
-
-  const sidebarVariants = {
-    true: {
-      left: '0'
-    },
-    false: {
-      left: '-60%'
-    }
-  }
-  console.log(window.innerWidth)
   return (
     <>
-      <div className="bars" style={expanded ? { left: '60%' } : { left: '5%' }} onClick={() => setExpaned(!expanded)}>
-        <UilBars />
+      <div className="w-20 bg-white shadow-md flex flex-col items-center py-8 space-y-8">
+        <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
+          AC
+        </div>
+        <SidebarIcon icon={Cloud} active={activeTab === 'dashboard'} />
+        <SidebarIcon icon={Leaf} />
+        <SidebarIcon icon={DollarSign} />
+        <SidebarIcon icon={Thermometer} />
+        <SidebarIcon icon={Settings} />
+        <div className="mt-auto">
+          <SidebarIcon icon={LogOut} />
+        </div>
       </div>
-      <motion.div className='sidebar'
-        variants={sidebarVariants}
-        animate={window.innerWidth <= 768 ? `${expanded}` : ''}
-      >
-        <div className="logo">
-
-          <span>
-            Agri<span> Co</span>nnect
-          </span>
-        </div>
-
-        <div className="menu">
-          {SidebarData.map((item, index) => {
-            return (
-
-
-              <div
-                className={selected === index ? "menuItem active" : "menuItem"}
-                key={index}
-                onClick={() => setSelected(index)}
-              >
-
-                <item.icon />
-                <Link to={item.to}> <span>{item.heading}</span></Link>
-
-              </div>
-
-            );
-          })}
-        </div>
-      </motion.div>
     </>
   );
 };

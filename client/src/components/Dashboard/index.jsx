@@ -115,22 +115,9 @@ const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
 
   return (
-    <div className="flex h-full overflow-y-auto bg-gray-100">
-      <div className="w-20 bg-white shadow-md flex flex-col items-center py-8 space-y-8">
-        <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
-          AC
-        </div>
-        <SidebarIcon icon={Cloud} active={activeTab === 'dashboard'} />
-        <SidebarIcon icon={Leaf} />
-        <SidebarIcon icon={DollarSign} />
-        <SidebarIcon icon={Thermometer} />
-        <SidebarIcon icon={Settings} />
-        <div className="mt-auto">
-          <SidebarIcon icon={LogOut} />
-        </div>
-      </div>
+    <div className="flex h-full overflow-y-auto bg-gray-100 w-full">
       
-      <div className="flex-1 p-8 overflow-auto">
+      <div className="flex-1 p-10 overflow-auto w-full">
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-800">Hi, Farmer John!</h1>

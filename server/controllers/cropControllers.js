@@ -1,4 +1,4 @@
-import { Crop } from "../models/Crop"
+import { Crop } from "../models/Crop.js"
 
 export const createCrop = async (req, res) => {
     const { name, type, season, averageYield, growingConditions, farmerId } = req.body;

@@ -1,4 +1,5 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
+import bcrypt from "bcrypt"
 
 const FarmerSchema = new mongoose.Schema({
     name: {
@@ -23,6 +24,10 @@ const FarmerSchema = new mongoose.Schema({
     }],
     experience: {
         type: Number, // Years of farming experience
+        required: true,
+    },
+    pin: {
+        type: String,
         required: true,
     },
     createdAt: {
