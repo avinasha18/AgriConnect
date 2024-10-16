@@ -7,6 +7,7 @@ import CropDiseaseDetection from "../DiseasePrediction";
 import CropYieldPrediction from "../YieldPrediction";
 import CropRecommendationSystem from "../RecommendationSystem";
 import Dashboard from "../Dashboard";
+import VoiceRecognition from "./VoiceRecognition";
 
 const RouteManagement = ({ isLogin }) => {
     const location = useLocation();
@@ -24,29 +25,30 @@ const RouteManagement = ({ isLogin }) => {
             <div className="AppGlass flex">
                 <Sidebar />
                 <div className="w-full h-full">
-                <Routes>
-                    <Route path='/recommendation' element={<CropRecommendationSystem />} />
-                    <Route path='/disease' element={<CropDiseaseDetection />} />
-                    <Route path='/yield' element={<CropYieldPrediction />} />
-                    <Route
-                        path='/dashboard'
-                        element={
-                            <ProtectedRoute nextPath={location.pathname}>
-                                <Dashboard />
-                            </ProtectedRoute>
-                        }
-                    />
-                    <Route
-                        path='/home'
-                        element={
-                            <ProtectedRoute isLogin={!!token} nextPath={location.pathname}>
-                                <Home />
-                            </ProtectedRoute>
-                        }
-                    />
-                    <Route path='/' element={<Navigate to='/dashboard' replace />} />
-                </Routes>
+                    <Routes>
+                        <Route path='/recommendation' element={<CropRecommendationSystem />} />
+                        <Route path='/disease' element={<CropDiseaseDetection />} />
+                        <Route path='/yield' element={<CropYieldPrediction />} />
+                        <Route
+                            path='/dashboard'
+                            element={
+                                <ProtectedRoute nextPath={location.pathname}>
+                                    <Dashboard />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path='/home'
+                            element={
+                                <ProtectedRoute isLogin={!!token} nextPath={location.pathname}>
+                                    <Home />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route path='/' element={<Navigate to='/dashboard' replace />} />
+                    </Routes>
                 </div>
+                <VoiceRecognition />
             </div>
         </div>
     );
