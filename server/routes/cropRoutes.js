@@ -30,7 +30,7 @@ router.get('/', async (req, res) => {
 // Create new crop with image upload
 router.post('/', upload.single('image'), async (req, res) => {
   try {
-    const { type, soilType, plantingDate, expectedHarvestDate, season, averageYield, N, P, K, temperature, humidity, moistPercent, ph, rainfall } = req.body;
+    const { type, soilType, plantingDate, expectedHarvestDate, season, averageYield, N, P, K, temperature, humidity, moistPercent, ph, rainfall, farmerID } = req.body;
     const newCrop = new Crop({
       type,
       soilType,
@@ -41,6 +41,7 @@ router.post('/', upload.single('image'), async (req, res) => {
       N,
       P,
       K,
+      farmer: farmerID,
       temperature,
       humidity,
       moistPercent,
@@ -49,6 +50,16 @@ router.post('/', upload.single('image'), async (req, res) => {
       image: req.file ? `/uploads/${req.file.filename}` : null,
     });
     await newCrop.save();
+
+    const farmer = await Farmer.findById(farmerID);
+
+    if(!farmer) {
+      return res.status(404).json({ message: 'Farmer not found' });
+    }
+
+    farmer.crops.push(newCrop._id);
+    farmer.save();
+
     res.status(201).json(newCrop);
   } catch (error) {
     console.log(error.message);

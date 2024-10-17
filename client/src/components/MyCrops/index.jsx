@@ -8,6 +8,8 @@ import { Doughnut } from 'react-chartjs-2';
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const MyCrops = () => {
+  const farmerID = localStorage.getItem('userId')
+
   const navigate = useNavigate();
   const [crops, setCrops] = useState([]);
   const [selectedCrop, setSelectedCrop] = useState(null);
@@ -29,6 +31,7 @@ const MyCrops = () => {
     moistPercent: '',
     ph: '',
     image: null,
+    farmerID: farmerID
   });
 
   const soilTypes = ['Sandy', 'Loamy', 'Black', 'Red', 'Clayey'];
