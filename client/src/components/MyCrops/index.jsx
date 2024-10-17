@@ -1,4 +1,5 @@
 import React, { useState, useEffect, Suspense } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
@@ -7,6 +8,7 @@ import { Doughnut } from 'react-chartjs-2';
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const MyCrops = () => {
+  const navigate = useNavigate()
   const [crops, setCrops] = useState([]);
   const [selectedCrop, setSelectedCrop] = useState(null);
   const [isAddingCrop, setIsAddingCrop] = useState(false);
@@ -15,6 +17,7 @@ const MyCrops = () => {
   const [formData, setFormData] = useState({
     name: '',
     type: '',
+    soilType: '',
     plantingDate: '',
     expectedHarvestDate: '',
     season: '',
@@ -24,6 +27,7 @@ const MyCrops = () => {
     K: '',
     temperature: '',
     humidity: '',
+    moistPercent: '',
     ph: '',
     rainfall: '',
     image: null,
@@ -72,6 +76,7 @@ const MyCrops = () => {
       setFormData({
         name: '',
         type: '',
+        soilType: '',
         plantingDate: '',
         expectedHarvestDate: '',
         season: '',
@@ -82,6 +87,7 @@ const MyCrops = () => {
         temperature: '',
         humidity: '',
         ph: '',
+        moistPercent: '',
         rainfall: '',
         image: null,
       });
@@ -101,16 +107,16 @@ const MyCrops = () => {
 
   const handleEdit = (crop) => {
     setSelectedCrop(crop);
-    
+
     setFormData({
       ...crop,
       plantingDate: crop.plantingDate ? new Date(crop.plantingDate).toISOString().split('T')[0] : '',
       expectedHarvestDate: crop.expectedHarvestDate ? new Date(crop.expectedHarvestDate).toISOString().split('T')[0] : '',
     });
-    
+
     setIsEditingCrop(true);
   };
-  
+
   const handleCloseModal = () => {
     setIsAddingCrop(false);
     setIsEditingCrop(false);
@@ -127,11 +133,16 @@ const MyCrops = () => {
       K: '',
       temperature: '',
       humidity: '',
+      moistPercent: '',
       ph: '',
       rainfall: '',
       image: null,
     });
   };
+
+  const recommendFeatures = () => {
+    navigate('/fertilizer');
+  }
 
   const nutrientChartData = {
     labels: ['Nitrogen', 'Phosphorus', 'Potassium'],
@@ -176,9 +187,9 @@ const MyCrops = () => {
               className="bg-white rounded-xl shadow-xl overflow-hidden"
             >
               <div className="p-6">
-              <div className="h-64 bg-gray-100 flex items-center justify-center">
-                {crop.image && <img src={`${crop.image}`} alt={crop.name} className="max-h-full max-w-full" />}
-              </div>
+                <div className="mb-5 h-24 bg-gray-100 flex items-center justify-center">
+                  {crop.image && <img src={`${crop.image}`} alt={crop.name} className="max-h-full max-w-full" />}
+                </div>
                 <h2 className="text-2xl font-bold mb-2">{crop.name}</h2>
                 <p className="text-gray-600 mb-4">Type: {crop.type}</p>
                 <p className="text-gray-600 mb-4">Planting Date: {new Date(crop.plantingDate).toLocaleDateString()}</p>
@@ -191,6 +202,12 @@ const MyCrops = () => {
                     Edit
                   </button>
                   <button
+                    onClick={recommendFeatures}
+                    className="bg-slate-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300"
+                  >
+                    Fertilizers
+                  </button>
+                  <button
                     onClick={() => handleDelete(crop._id)}
                     className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-300"
                   >
@@ -198,7 +215,7 @@ const MyCrops = () => {
                   </button>
                 </div>
               </div>
-             
+
             </motion.div>
           ))}
         </AnimatePresence>
@@ -231,9 +248,8 @@ const MyCrops = () => {
                 {steps.map((label, index) => (
                   <span
                     key={label}
-                    className={`inline-block px-3 py-1 mr-2 rounded-full ${
-                      index === step ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-700'
-                    }`}
+                    className={`inline-block px-3 py-1 mr-2 rounded-full ${index === step ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-700'
+                      }`}
                   >
                     {label}
                   </span>
@@ -258,12 +274,36 @@ const MyCrops = () => {
                     <div className="relative">
                       <input
                         type="text"
+                        id="soilType"
+                        name="soilType"
+                        value={formData.soilType}
+                        onChange={handleInputChange}
+                        className="w-full px-3 py-2 border-b-2 border-gray-300 focus:border-green-600 outline-none"
+                        placeholder="Soil Type"
+                        required
+                      />
+                    </div>
+                    <div className="relative">
+                      <input
+                        type="text"
                         id="type"
                         name="type"
                         value={formData.type}
                         onChange={handleInputChange}
                         className="w-full px-3 py-2 border-b-2 border-gray-300 focus:border-green-600 outline-none"
                         placeholder="Crop Type"
+                        required
+                      />
+                    </div>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        id="moistPercent"
+                        name="moistPercent"
+                        value={formData.moistPercent}
+                        onChange={handleInputChange}
+                        className="w-full px-3 py-2 border-b-2 border-gray-300 focus:border-green-600 outline-none"
+                        placeholder="Moist Percent"
                         required
                       />
                     </div>

@@ -6,6 +6,7 @@ const CropSchema = new mongoose.Schema({
   season: { type: String, required: true },
   averageYield: { type: Number, required: true },
   cropType: { type: String },
+  moistPercent: { type: String },
   growingConditions: {
     soilType: { type: String },
     temperature: {

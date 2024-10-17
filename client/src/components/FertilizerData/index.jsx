@@ -1,57 +1,99 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const FertilizerData = () => {
+  const [inputData, setInputData] = useState({
+    Moisture: 45,
+    'Soil Type': 'Loamy',
+    'Crop Type': 'Sugarcane',
+    Nitrogen: 12,
+    Potassium: 0,
+    Phosphorous: 36
+  });
 
+  const [fertilizerInfo, setFertilizerInfo] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const fetchLocationData = async () => {
+  const fetchFertilizerData = async () => {
     setLoading(true);
+    setError(null);
+
     try {
-      const position = await new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject);
-      });
-      const { latitude, longitude } = position.coords;
-      const weatherData = await fetchWeatherData(latitude, longitude);
-
-      console.log(weatherData);
-
-    } catch (error) {
-      console.error('Error fetching data:', error);
+      const response = await axios.post('http://127.0.0.1:5000/fertilizer-predict', inputData);
+      console.log(response.data)
+      setFertilizerInfo(response.data);
+    } catch (err) {
+      setError('Failed to fetch fertilizer data. Please try again later.');
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchWeatherData = async (latitude, longitude) => {
-    const response = await axios.get(`http://api.weatherapi.com/v1/current.json?key=8486f0f9386945cc97f154711241410&q=${latitude},${longitude}`);
-    return response;
+  const capitalize = (str) => {
+    return str.replace(/\b\w/g, l => l.toUpperCase());
   };
-  return (
-    <div>
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        type="button"
-        onClick={fetchLocationData}
-        className="w-full bg-blue-500 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-blue-600 transition duration-300 ease-in-out mb-4"
-        disabled={loading}
-      >
-        {loading ? (
-          <span className="flex items-center justify-center">
-            <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-            </svg>
-            Fetching Location Data
-          </span>
-        ) : (
-          'Use Current Location'
-        )}
-      </motion.button>
-    </div>
-  )
-}
 
-export default FertilizerData
+  useEffect(() => {
+    fetchFertilizerData();
+  }, []); // Fetch data when the component mounts
+
+  return (
+    <div className="flex flex-col items-center p-4">
+      {loading && <p className="text-lg text-gray-700">Loading...</p>}
+      {fertilizerInfo && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="w-full bg-white rounded-lg p-6"
+        >
+          <h2 className="text-2xl font-bold mb-4">Recommended Fertilizer</h2>
+          <div className="w-full my-16">
+            <div className='flex flex-col w-full items-center mb-10'>
+              <p className="text-gray-700 font-bold text-4xl">{fertilizerInfo.prediction_response.fertilizer.name}</p>
+              <p className="text-gray-700 p-8 text-lg">{fertilizerInfo.description}</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className='bg-white shadow-md p-4 rounded-xl'>
+                <p className='text-xl font-bold mt-5 text-green-500'>Chemical Formula</p>
+                <p className='text-3xl font-medium ml-32'>{fertilizerInfo.prediction_response.fertilizer.chemical_formula}</p>
+              </div>
+
+              <div className='bg-white shadow-md p-4 rounded-xl'>
+                <p className='text-xl font-bold mt-5 text-green-500'>Nitrogen Percentage</p>
+                <p className='text-3xl font-medium ml-60'>{fertilizerInfo.prediction_response.fertilizer.nitrogen_content}</p>
+              </div>
+
+              <div className='bg-white shadow-md py-10 px-4 rounded-xl'>
+                <p className='text-xl font-bold text-green-500'>Recommended:</p>
+                <p className='text-2xl font-medium ml-32'>{fertilizerInfo.prediction_response.fertilizer.application_rate.recommended_rate}</p>
+              </div>
+
+              <div className='bg-white shadow-md p-4 rounded-xl'>
+                <h4 className="text-xl font-bold text-green-500 mt-4 mb-2">Storage Conditions:</h4>
+                <div className='p-2'>
+                  <p className="text-gray-700"><strong>Conditions:</strong> {capitalize(fertilizerInfo.prediction_response.fertilizer.storage.conditions)}</p>
+                  <p className="text-gray-700"><strong>Avoid Contact:</strong> {capitalize(fertilizerInfo.prediction_response.fertilizer.storage.avoid_contact)}</p>
+                </div>
+              </div>
+
+              <div className='bg-white shadow-md p-4 rounded-xl'>
+                <h4 className="text-xl font-bold text-green-500 mt-4 mb-2">Safety Precautions:</h4>
+                <div className='p-2'>
+                  <p className="text-gray-700"><strong>Handling Precautions:</strong> {fertilizerInfo.prediction_response.fertilizer.safety.handling_precautions}</p>
+                  <p className="text-gray-700"><strong>First Aid:</strong> {fertilizerInfo.prediction_response.fertilizer.safety.first_aid}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </motion.div>
+      )}
+    </div>
+  );
+};
+
+export default FertilizerData;
