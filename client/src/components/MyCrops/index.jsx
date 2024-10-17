@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
@@ -8,14 +8,13 @@ import { Doughnut } from 'react-chartjs-2';
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const MyCrops = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [crops, setCrops] = useState([]);
   const [selectedCrop, setSelectedCrop] = useState(null);
   const [isAddingCrop, setIsAddingCrop] = useState(false);
   const [isEditingCrop, setIsEditingCrop] = useState(false);
   const [step, setStep] = useState(0);
   const [formData, setFormData] = useState({
-    name: '',
     type: '',
     soilType: '',
     plantingDate: '',
@@ -29,9 +28,11 @@ const MyCrops = () => {
     humidity: '',
     moistPercent: '',
     ph: '',
-    rainfall: '',
     image: null,
   });
+
+  const soilTypes = ['Sandy', 'Loamy', 'Black', 'Red', 'Clayey'];
+  const cropTypes = ['Maize', 'Papaya', 'Cotton', 'Tobacco', 'Rice', 'Barley', 'Wheat', 'Millets', 'Oil seeds', 'Pulses', 'Ground Nuts'];
 
   useEffect(() => {
     fetchCrops();
@@ -74,7 +75,6 @@ const MyCrops = () => {
       setIsEditingCrop(false);
       setSelectedCrop(null);
       setFormData({
-        name: '',
         type: '',
         soilType: '',
         plantingDate: '',
@@ -86,9 +86,8 @@ const MyCrops = () => {
         K: '',
         temperature: '',
         humidity: '',
-        ph: '',
         moistPercent: '',
-        rainfall: '',
+        ph: '',
         image: null,
       });
     } catch (error) {
@@ -122,7 +121,6 @@ const MyCrops = () => {
     setIsEditingCrop(false);
     setSelectedCrop(null);
     setFormData({
-      name: '',
       type: '',
       plantingDate: '',
       expectedHarvestDate: '',
@@ -134,14 +132,14 @@ const MyCrops = () => {
       temperature: '',
       humidity: '',
       moistPercent: '',
+      soilType: '',
       ph: '',
-      rainfall: '',
       image: null,
     });
   };
 
-  const recommendFeatures = () => {
-    navigate('/fertilizer');
+  const recommendFeatures = (id) => {
+    navigate('/fertilizer', { state: { id } });
   }
 
   const nutrientChartData = {
@@ -202,7 +200,7 @@ const MyCrops = () => {
                     Edit
                   </button>
                   <button
-                    onClick={recommendFeatures}
+                    onClick={()=>recommendFeatures(crop._id)}
                     className="bg-slate-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300"
                   >
                     Fertilizers
@@ -259,33 +257,24 @@ const MyCrops = () => {
               {step === 0 && (
                 <div className="space-y-6">
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="relative">
-                      <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleInputChange}
-                        className="w-full px-3 py-2 border-b-2 border-gray-300 focus:border-green-600 outline-none"
-                        placeholder="Crop Name"
-                        required
-                      />
-                    </div>
-                    <div className="relative">
-                      <input
-                        type="text"
+                    <div className="relative mb-4">
+                      <select
                         id="soilType"
                         name="soilType"
                         value={formData.soilType}
                         onChange={handleInputChange}
                         className="w-full px-3 py-2 border-b-2 border-gray-300 focus:border-green-600 outline-none"
-                        placeholder="Soil Type"
                         required
-                      />
+                      >
+                        {soilTypes.map(type => (
+                          <option key={type} value={type}>
+                            {type}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                     <div className="relative">
-                      <input
-                        type="text"
+                      <select
                         id="type"
                         name="type"
                         value={formData.type}
@@ -293,7 +282,13 @@ const MyCrops = () => {
                         className="w-full px-3 py-2 border-b-2 border-gray-300 focus:border-green-600 outline-none"
                         placeholder="Crop Type"
                         required
-                      />
+                      >
+                        {cropTypes.map(type => (
+                          <option key={type} value={type}>
+                            {type}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                     <div className="relative">
                       <input

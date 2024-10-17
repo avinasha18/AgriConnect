@@ -1,8 +1,8 @@
 import express from 'express';
-import auth from '../middleware/auth.js';
-import { createCropAndAssignToFarmer, updateCropStatus, getAvailableCrops } from '../controllers/cropControllers.js';
 import multer from 'multer';
+import mongoose from 'mongoose';
 import { Crop } from '../models/Crop.js';
+import { Farmer } from '../models/User.js';
 
 const router = express.Router();
 
@@ -17,9 +17,6 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-router.post('/:farmerID', createCropAndAssignToFarmer);
-router.put('/status', updateCropStatus);
-router.get('/available', getAvailableCrops);
 // Get all crops
 router.get('/', async (req, res) => {
   try {
@@ -33,20 +30,28 @@ router.get('/', async (req, res) => {
 // Create new crop with image upload
 router.post('/', upload.single('image'), async (req, res) => {
   try {
-    const { name, type, season, averageYield, plantingDate, harvestDate } = req.body;
+    const { type, soilType, plantingDate, expectedHarvestDate, season, averageYield, N, P, K, temperature, humidity, moistPercent, ph, rainfall } = req.body;
     const newCrop = new Crop({
-      name,
       type,
+      soilType,
+      plantingDate,
+      expectedHarvestDate,
       season,
       averageYield,
-      plantingDate,
-      harvestDate,
+      N,
+      P,
+      K,
+      temperature,
+      humidity,
+      moistPercent,
+      ph,
+      rainfall,
       image: req.file ? `/uploads/${req.file.filename}` : null,
     });
     await newCrop.save();
     res.status(201).json(newCrop);
   } catch (error) {
-    console.log(error.message)
+    console.log(error.message);
     res.status(400).json({ message: 'Error saving crop', error });
   }
 });
@@ -75,6 +80,23 @@ router.delete('/:id', async (req, res) => {
     res.json({ message: 'Crop deleted successfully' });
   } catch (error) {
     res.status(400).json({ message: 'Error deleting crop', error });
+  }
+});
+
+router.get('/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Find the farmer by ID and populate the crops array
+    const crop = await Crop.findById(id)
+
+    if (!crop) {
+      return res.status(404).json({ message: 'Farmer not found' });
+    }
+
+    res.json(crop);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching farmer and crops', error });
   }
 });
 
