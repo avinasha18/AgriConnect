@@ -1,31 +1,10 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
-
-// 3D Crop Model
-const CropModel = ({ cropType }) => {
-  const [rotation, setRotation] = useState([0, 0, 0]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setRotation(prev => [prev[0], prev[1] + 0.01, prev[2]]);
-    }, 16);
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <mesh rotation={rotation}>
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color={cropType === 'fruit' ? 'red' : 'green'} />
-    </mesh>
-  );
-};
 
 const MyCrops = () => {
   const [crops, setCrops] = useState([]);
@@ -57,7 +36,11 @@ const MyCrops = () => {
   const fetchCrops = async () => {
     try {
       const response = await axios.get('http://localhost:5000/crops');
-      setCrops(response.data);
+      const cropsWithImages = response.data.map(crop => ({
+        ...crop,
+        image: crop.image ? `http://localhost:5000${crop.image}` : null,
+      }));
+      setCrops(cropsWithImages);
     } catch (error) {
       console.error('Error fetching crops:', error);
     }
@@ -86,6 +69,22 @@ const MyCrops = () => {
       setIsAddingCrop(false);
       setIsEditingCrop(false);
       setSelectedCrop(null);
+      setFormData({
+        name: '',
+        type: '',
+        plantingDate: '',
+        expectedHarvestDate: '',
+        season: '',
+        averageYield: '',
+        N: '',
+        P: '',
+        K: '',
+        temperature: '',
+        humidity: '',
+        ph: '',
+        rainfall: '',
+        image: null,
+      });
     } catch (error) {
       console.error('Error saving crop:', error);
     }
@@ -102,8 +101,36 @@ const MyCrops = () => {
 
   const handleEdit = (crop) => {
     setSelectedCrop(crop);
-    setFormData(crop);
+    
+    setFormData({
+      ...crop,
+      plantingDate: crop.plantingDate ? new Date(crop.plantingDate).toISOString().split('T')[0] : '',
+      expectedHarvestDate: crop.expectedHarvestDate ? new Date(crop.expectedHarvestDate).toISOString().split('T')[0] : '',
+    });
+    
     setIsEditingCrop(true);
+  };
+  
+  const handleCloseModal = () => {
+    setIsAddingCrop(false);
+    setIsEditingCrop(false);
+    setSelectedCrop(null);
+    setFormData({
+      name: '',
+      type: '',
+      plantingDate: '',
+      expectedHarvestDate: '',
+      season: '',
+      averageYield: '',
+      N: '',
+      P: '',
+      K: '',
+      temperature: '',
+      humidity: '',
+      ph: '',
+      rainfall: '',
+      image: null,
+    });
   };
 
   const nutrientChartData = {
@@ -120,11 +147,11 @@ const MyCrops = () => {
   const steps = ['General Info', 'Environmental Data', 'Nutrients & Image'];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-400 to-blue-500 p-8">
+    <div className="min-h-screen bg-white p-8">
       <motion.h1
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-4xl font-bold text-white mb-8 text-center"
+        className="text-4xl font-bold text-green-600 mb-8 text-center"
       >
         My Crops
       </motion.h1>
@@ -149,6 +176,9 @@ const MyCrops = () => {
               className="bg-white rounded-xl shadow-xl overflow-hidden"
             >
               <div className="p-6">
+              <div className="h-64 bg-gray-100 flex items-center justify-center">
+                {crop.image && <img src={`${crop.image}`} alt={crop.name} className="max-h-full max-w-full" />}
+              </div>
                 <h2 className="text-2xl font-bold mb-2">{crop.name}</h2>
                 <p className="text-gray-600 mb-4">Type: {crop.type}</p>
                 <p className="text-gray-600 mb-4">Planting Date: {new Date(crop.plantingDate).toLocaleDateString()}</p>
@@ -168,16 +198,7 @@ const MyCrops = () => {
                   </button>
                 </div>
               </div>
-              <div className="h-64 bg-gray-100">
-                <Canvas>
-                  <ambientLight intensity={0.5} />
-                  <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
-                  <Suspense fallback={null}>
-                    <CropModel cropType={crop.type} />
-                  </Suspense>
-                  <OrbitControls />
-                </Canvas>
-              </div>
+             
             </motion.div>
           ))}
         </AnimatePresence>
@@ -197,6 +218,15 @@ const MyCrops = () => {
               exit={{ y: 50, opacity: 0 }}
               className="bg-white p-8 rounded-xl shadow-2xl max-w-[900px] w-full"
             >
+              <div className="flex justify-end mb-4">
+                <button
+                  onClick={handleCloseModal}
+                  className="text-gray-600 hover:text-gray-800"
+                >
+                  Close
+                </button>
+              </div>
+
               <div className="mb-6">
                 {steps.map((label, index) => (
                   <span
@@ -241,6 +271,7 @@ const MyCrops = () => {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="relative">
+                      <label htmlFor="plantingDate" className="block text-gray-600 mb-1">Planting Date</label>
                       <input
                         type="date"
                         id="plantingDate"
@@ -252,10 +283,10 @@ const MyCrops = () => {
                       />
                     </div>
                     <div className="relative">
+                      <label htmlFor="expectedHarvestDate" className="block text-gray-600 mb-1">Expected Harvest Date</label>
                       <input
                         type="date"
                         id="expectedHarvestDate"
-                        placeholder='Expected harvest Date'
                         name="expectedHarvestDate"
                         value={formData.expectedHarvestDate}
                         onChange={handleInputChange}
@@ -352,7 +383,7 @@ const MyCrops = () => {
               )}
 
               {step === 2 && (
-                <div className="space-y-6 h-[500px]">
+                <div className="space-y-6 h-[400px]">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="relative">
                       <input
