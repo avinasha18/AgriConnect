@@ -5,10 +5,11 @@ import Sidebar from '../Sidebar';
 import Home from "../Home";
 import CropDiseaseDetection from "../DiseasePrediction";
 import CropYieldPrediction from "../YieldPrediction";
-import CropRecommendationSystem from "../RecommendationSystem";
+import CropRecommendationSystem from "../RecommendationSystem/index2";
 import Dashboard from "../Dashboard";
 import VoiceRecognition from "./VoiceRecognition";
 import MyCrops from "../MyCrops";
+import DetailView from "../RecommendationSystem/DetailView";
 
 const RouteManagement = ({  }) => {
     const location = useLocation();
@@ -31,7 +32,7 @@ const RouteManagement = ({  }) => {
                         <Route path='/disease' element={<CropDiseaseDetection />} />
                         <Route path='/yield' element={<CropYieldPrediction />} />
                         <Route path='/crops' element={<MyCrops />} />
-
+                        <Route path='/crop/:name' element={<DetailView/>} />
                         <Route
                             path='/dashboard'
                             element={
