@@ -10,6 +10,7 @@ import Dashboard from "../Dashboard";
 import VoiceRecognition from "./VoiceRecognition";
 import Profile from "../Profile";
 import MyCrops from "../MyCrops";
+import FertilizerData from "../FertilizerData";
 
 const RouteManagement = ({  }) => {
     const location = useLocation();
@@ -54,6 +55,14 @@ const RouteManagement = ({  }) => {
                             element={
                                 <ProtectedRoute isLogin={!!token} nextPath={location.pathname}>
                                     <Home />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path='/fertilizer'
+                            element={
+                                <ProtectedRoute isLogin={!!token} nextPath={location.pathname}>
+                                    <FertilizerData />
                                 </ProtectedRoute>
                             }
                         />
