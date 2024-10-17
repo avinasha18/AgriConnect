@@ -1,18 +1,11 @@
 import mongoose from "mongoose";
 
 const CropSchema = new mongoose.Schema({
-  name: { type: String, required: true },
   type: { type: String, required: true },
   season: { type: String, required: true },
   averageYield: { type: Number, required: true },
-  growingConditions: {
-    soilType: { type: String },
-    temperature: {
-      min: { type: Number },
-      max: { type: Number },
-    },
-    rainfall: { type: Number },
-  },
+  soilType: { type: String },
+  moistPercent: { type: Number },
   pests: [{ type: String }],
   diseases: [{ type: String }],
   farmer: { type: mongoose.Schema.Types.ObjectId, ref: 'Farmer' },
@@ -27,6 +20,14 @@ const CropSchema = new mongoose.Schema({
   harvestDate: { type: Date },
   currentYield: { type: Number, default: 0 },
   targetYield: { type: Number },
+  expectedHarvestDate: { type: Date },
+  N: { type: Number },
+  P: { type: Number },
+  K: { type: Number },
+  temperature: { type: Number },
+  humidity: { type: Number },
+  ph: { type: Number },
+  rainfall: { type: Number },
   createdAt: { type: Date, default: Date.now },
 });
 

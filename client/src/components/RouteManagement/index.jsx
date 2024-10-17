@@ -8,7 +8,9 @@ import CropYieldPrediction from "../YieldPrediction";
 import CropRecommendationSystem from "../RecommendationSystem/index2";
 import Dashboard from "../Dashboard/index2";
 import VoiceRecognition from "./VoiceRecognition";
+import Profile from "../Profile";
 import MyCrops from "../MyCrops";
+import FertilizerData from "../FertilizerData";
 import DetailView from "../RecommendationSystem/DetailView";
 
 const RouteManagement = ({  }) => {
@@ -23,7 +25,7 @@ const RouteManagement = ({  }) => {
     };
 
     return (
-        <div className="p-2">
+        <div>
             <div className="flex">
                 <Sidebar />
                 <div className="w-full h-full">
@@ -42,10 +44,26 @@ const RouteManagement = ({  }) => {
                             }
                         />
                         <Route
+                            path='/profile'
+                            element={
+                                <ProtectedRoute nextPath={location.pathname}>
+                                    <Profile />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
                             path='/home'
                             element={
                                 <ProtectedRoute isLogin={!!token} nextPath={location.pathname}>
                                     <Home />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path='/fertilizer'
+                            element={
+                                <ProtectedRoute isLogin={!!token} nextPath={location.pathname}>
+                                    <FertilizerData />
                                 </ProtectedRoute>
                             }
                         />
