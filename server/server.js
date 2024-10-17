@@ -20,6 +20,7 @@ mongoose.connect(config.MONGODB_URI, {})
 
 app.use('', authRoutes);
 app.use('/crops', cropRoutes);
+app.use('/uploads', express.static('uploads'));
 app.use('/farmers', farmerRoutes);
 app.use('/customers', customerRoutes);
 

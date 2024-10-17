@@ -186,7 +186,7 @@ const Dashboard = () => {
     }
   };
 
-  
+
 
   return (
     <div className="flex h-full overflow-y-auto bg-gray-100 w-full">
@@ -351,7 +351,7 @@ const Dashboard = () => {
               <div className="space-y-4">
                 {farmingHabits.map((habit, index) => (
                   <div key={index} className="flex items-center">
-                    <div className="bg-gray-600 p-2 rounded-full mr-4">
+                    <div className="bg-green-400 p-2 rounded-full mr-4">
                       {habit.icon}
                     </div>
                     <div className="flex-1">
