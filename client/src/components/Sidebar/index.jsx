@@ -30,6 +30,7 @@ const Sidebar = () => {
   const texts = {
     en: {
       dashboard: 'Dashboard',
+      crops : 'My Crops',
       recommendation: 'Recommendation',
       disease: 'Crop Disease',
       price: 'Market Price',
@@ -77,6 +78,9 @@ const Sidebar = () => {
     } else if (path === '/yield') {
       setActiveTab('yield');
     }
+    else if(path == '/crops'){
+      setActiveTab('crops')
+    }
   }, [location]);
 
   return (
@@ -94,6 +98,8 @@ const Sidebar = () => {
       </div>
 
       {/* Sidebar Items */}
+      <SidebarIcon to='/crops' icon={UilChart} active={activeTab === 'crops'} text={texts[language].crops} expanded={expanded} />
+
       <SidebarIcon to='/dashboard' icon={UilEstate} active={activeTab === 'dashboard'} text={texts[language].dashboard} expanded={expanded} />
       <SidebarIcon to='/recommendation' icon={UilClipboardAlt} active={activeTab === 'recommendation'} text={texts[language].recommendation} expanded={expanded} />
       <SidebarIcon to='/disease' icon={UilUsersAlt} active={activeTab === 'disease'} text={texts[language].disease} expanded={expanded} />
