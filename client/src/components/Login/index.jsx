@@ -49,6 +49,7 @@ const Login = () => {
             const response = await axios.post('http://localhost:5000/login', { phone, pin: enteredPin });
             const { token, userId } = response.data;
             localStorage.setItem('token',token)
+            localStorage.setItem('userId' , userId)
             // Store the token in the Redux store
             dispatch(setToken(token));
 

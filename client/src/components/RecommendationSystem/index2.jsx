@@ -291,7 +291,7 @@ const CropRecommendationSystem = () => {
       <Box
         sx={{
           minHeight: '100vh',
-          background: 'white',
+          background: 'bg-white',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',

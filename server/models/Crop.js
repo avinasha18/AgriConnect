@@ -21,11 +21,16 @@ const CropSchema = new mongoose.Schema({
     enum: ['cultivating', 'completed', 'sold'],
     default: 'cultivating',
   },
-  image: { type: String }, // URL to the crop image
+  image: { type: String },
   description: { type: String },
   plantingDate: { type: Date },
   harvestDate: { type: Date },
+  currentYield: { type: Number, default: 0 },
+  targetYield: { type: Number },
   createdAt: { type: Date, default: Date.now },
 });
+
+
+
 
 export const Crop = mongoose.model('Crop', CropSchema);
