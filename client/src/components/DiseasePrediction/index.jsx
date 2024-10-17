@@ -1,8 +1,9 @@
-// CropDiseaseDetection.jsx
 import React, { useState } from 'react';
 import { UilUpload, UilSpinnerAlt, UilCheckCircle, UilExclamationCircle } from '@iconscout/react-unicons';
 import { motion } from 'framer-motion';
 import Stepper from './Stepper';
+import cropImage from '../../assets/crop2.jpg';
+import axios from 'axios';
 
 const CropDiseaseDetection = () => {
   const [file, setFile] = useState(null);
@@ -26,22 +27,24 @@ const CropDiseaseDetection = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    // Simulating API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    setLoading(false);
-    setResult({
-      plantName: "Tomato",
-      disease: "Late Blight",
-      causes: "Fungal infection caused by Phytophthora infestans",
-      symptoms: "Dark brown spots on leaves, stems, and fruits",
-      suggestions: [
-        "Remove and destroy infected plant parts",
-        "Apply fungicide as per expert recommendation",
-        "Improve air circulation around plants"
-      ],
-      fertilizers: ["Copper-based fungicide", "Organic compost tea"]
-    });
-    setCurrentStep(2);
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await axios.post('http://127.0.0.1:5000/predict', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      console.log(response.data)
+      setResult(response.data);
+      setCurrentStep(2);
+    } catch (error) {
+      console.error('Error predicting disease:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const nextStep = () => {
@@ -53,12 +56,19 @@ const CropDiseaseDetection = () => {
   };
 
   return (
-    <div className="flex h-full justify-center items-center overflow-y-auto bg-[#7cd77c]  p-8">
+    <div
+      className="flex h-full min-h-screen justify-center items-center overflow-y-auto bg-[#7cd77c] p-8"
+      style={{
+        backgroundImage: `url(${cropImage})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="max-w-4xl mx-auto rounded-xl shadow-lg overflow-hidden bg-white text-black"
+        className="max-w-4xl mx-auto rounded-xl shadow-lg overflow-hidden bg-slate-50 text-black"
       >
         <div className="p-8 ">
           <h1 className="text-3xl font-bold text-gray-800 mb-6">Crop Disease Detection</h1>
@@ -155,13 +165,9 @@ const CropDiseaseDetection = () => {
               <h2 className="text-2xl font-semibold mb-4 text-gray-800">Analysis Results</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <h3 className="text-lg font-medium mb-2 text-gray-700">Plant Information</h3>
-                  <p><span className="font-semibold">Name:</span> {result.plantName}</p>
-                  <p><span className="font-semibold">Disease:</span> {result.disease}</p>
-                </div>
-                <div>
-                  <h3 className="text-lg font-medium mb-2 text-gray-700">Causes</h3>
-                  <p>{result.causes}</p>
+                  <h3 className="text-lg font-medium mb-2 text-gray-700">Disease Information</h3>
+                  <p><span className="font-semibold">Disease:</span> {result.diseaseName}</p>
+                  <p><span className="font-semibold">Causes:</span> {result.causes}</p>
                 </div>
                 <div>
                   <h3 className="text-lg font-medium mb-2 text-gray-700">Symptoms</h3>

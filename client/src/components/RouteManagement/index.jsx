@@ -8,6 +8,7 @@ import CropYieldPrediction from "../YieldPrediction";
 import CropRecommendationSystem from "../RecommendationSystem";
 import Dashboard from "../Dashboard";
 import VoiceRecognition from "./VoiceRecognition";
+import MyCrops from "../MyCrops";
 
 const RouteManagement = ({  }) => {
     const location = useLocation();
@@ -29,6 +30,8 @@ const RouteManagement = ({  }) => {
                         <Route path='/recommendation' element={<CropRecommendationSystem />} />
                         <Route path='/disease' element={<CropDiseaseDetection />} />
                         <Route path='/yield' element={<CropYieldPrediction />} />
+                        <Route path='/crops' element={<MyCrops />} />
+
                         <Route
                             path='/dashboard'
                             element={

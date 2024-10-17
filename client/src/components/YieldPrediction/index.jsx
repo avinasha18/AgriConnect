@@ -95,7 +95,7 @@ const CropYieldPrediction = () => {
   };
 
   return (
-    <div className="flex h-full bg-[#7cd77c] items-center p-8 overflow-y-auto">
+    <div className="flex min-h-screen bg-white items-center p-8 overflow-y-auto">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
