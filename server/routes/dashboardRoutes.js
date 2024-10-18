@@ -8,6 +8,6 @@ const router = express.Router();
 router.get('/',getDashboardData)
 router.get('/:farmerId', getDashboardData);
 
-router.put('/update',updateCropYield)
-router.put('/update-farming',updateFarmingDay)
+router.post('/update',updateCropYield)
+router.post('/update-farming',updateFarmingDay)
 export default router;

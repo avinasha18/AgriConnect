@@ -37,7 +37,9 @@ const Modal = ({ onClose, onSubmit, selectedDate }) => {
         exit={{ scale: 0.9, opacity: 0 }}
       >
         <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold">Farming Activities for {new Date(selectedDate).toLocaleDateString()}</h2>
+        <h2 className="text-xl font-bold">
+  Farming Activities for {selectedDate ? new Date(selectedDate).toLocaleDateString() : 'Unknown Date'}
+</h2>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
             <X size={24} />
           </button>

@@ -28,8 +28,18 @@ import {
   CalendarToday,
   Info,
 } from '@mui/icons-material';
-import { orange } from '@mui/material/colors';
-import orangeImg from '../../assets/orange.jpg'
+
+import orangeImg from '../../assets/orange.jpg';
+import papaya from '../../assets/papaya.jpg';
+import mungbeans from '../../assets/mungbeans.jpg';
+import coconut from '../../assets/coconut.jpg';
+import wheat from '../../assets/wheat.jpg';
+import rice from '../../assets/rice.jpg';
+import maize from '../../assets/maize.jpg';
+import coffee from '../../assets/coffee.jpg';
+import kidneybeans from '../../assets/kidneybeans.jpg';
+import jute from '../../assets/jute.jpg';
+import muskmelon from '../../assets/muskmelon.jpg'
 const theme = createTheme({
   palette: {
     primary: {
@@ -41,11 +51,27 @@ const theme = createTheme({
   },
 });
 
+// Map crop names to their images
+const cropImages = {
+  orange: orangeImg,
+  papaya: papaya,
+  mungbeans: mungbeans,
+  coconut: coconut,
+  wheat: wheat,
+  rice: rice,
+  maize: maize,
+  coffee: coffee,
+  kidneybeans: kidneybeans,
+  jute: jute,
+  muskmelon : muskmelon,
+};
+
 const DetailView = () => {
   const location = useLocation();
   const { crop } = location.state || {};
   const [activeTab, setActiveTab] = useState(0);
-    console.log(crop)
+  console.log(crop);
+
   if (!crop) {
     return (
       <Box className="min-h-screen flex items-center justify-center bg-gradient-to-b from-green-400 to-blue-500">
@@ -59,9 +85,10 @@ const DetailView = () => {
   };
 
   const nutrientData = [
-    { name: 'Nutrients', N: crop?.nutrientRequiments ?.N, P: crop?.nutrientRequiments?.P, K: crop?.nutrientRequiments?.K },
+    { name: 'Nutrients', N: crop?.nutrientRequiments?.N, P: crop?.nutrientRequiments?.P, K: crop?.nutrientRequiments?.K },
   ];
-console.log(nutrientData)
+  console.log(nutrientData);
+
   const TabPanel = ({ children, value, index }) => (
     <AnimatePresence mode="wait">
       {value === index && (
@@ -78,6 +105,9 @@ console.log(nutrientData)
     </AnimatePresence>
   );
 
+  // Select the image based on the crop name, use a default image if not found
+  const selectedImage = cropImages[crop.cropName] || orangeImg;
+
   return (
     <ThemeProvider theme={theme}>
       <Box className="min-h-screen bg-white p-8">
@@ -90,7 +120,7 @@ console.log(nutrientData)
             <CardMedia
               component="img"
               height="200"
-              image={crop.imageUrl || orangeImg}
+              image={selectedImage}
               alt={crop.cropName}
               className="object-cover h-[250px]"
             />
@@ -113,9 +143,9 @@ console.log(nutrientData)
                 <Box className="mt-4">
                   <Typography variant="h5" className="mb-2">Description</Typography>
                   <Typography variant="body1">{crop.description || 'No description available.'}</Typography>
-                  
+
                   <Divider className="my-4" />
-                  
+
                   <Typography variant="h5" className="mb-2">Additional Information</Typography>
                   <List>
                     <ListItem>

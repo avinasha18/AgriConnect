@@ -23,7 +23,17 @@ import locationAnimation from './location.json';
 import weatherAnimation from './weather.json';
 import soilAnimation from './soil.json';
 import analysisAnimation from './AI.json';
-
+import orangeImg from '../../assets/orange.jpg';
+import papaya from '../../assets/papaya.jpg';
+import mungbeans from '../../assets/mungbeans.jpg';
+import coconut from '../../assets/coconut.jpg';
+import wheat from '../../assets/wheat.jpg';
+import rice from '../../assets/rice.jpg';
+import maize from '../../assets/maize.jpg';
+import coffee from '../../assets/coffee.jpg';
+import kidneybeans from '../../assets/kidneybeans.jpg';
+import jute from '../../assets/jute.jpg';
+import muskmelon from '../../assets/muskmelon.jpg'
 const theme = createTheme({
   palette: {
     primary: {
@@ -34,6 +44,20 @@ const theme = createTheme({
     },
   },
 });
+
+const cropImages = {
+  orange: orangeImg,
+  papaya: papaya,
+  mungbeans: mungbeans,
+  coconut: coconut,
+  wheat: wheat,
+  rice: rice,
+  maize: maize,
+  coffee: coffee,
+  kidneybeans: kidneybeans,
+  jute: jute,
+  muskmelon : muskmelon,
+};
 
 const CropRecommendationSystem = () => {
   const [step, setStep] = useState(0);
@@ -257,7 +281,7 @@ const CropRecommendationSystem = () => {
                           alignItems: 'center',
                           justifyContent: 'center',
                         }}
-                        image={crop.imageUrl}
+                        image={cropImages[crop.cropName] || orangeImg}
                       >
                         {!crop.imageUrl && (
                           <Typography variant="h5" color="text.secondary">
