@@ -30,11 +30,13 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import Lottie from 'react-lottie';
 import axios from 'axios';
-import cropImage from '../../assets/orange.jpg'
+import cropImage from '../../assets/orange.jpg';
 // Import your Lottie animation JSON files
 import uploadAnimation from './uploading.json';
 import analysisAnimation from '../RecommendationSystem/AI.json';
 import successAnimation from './success.json';
+import { useLanguage } from '../../hooks/languageContext.jsx';
+import { translations } from './translations.jsx';
 
 const theme = createTheme({
   palette: {
@@ -54,8 +56,10 @@ const CropDiseaseDetection = () => {
   const [result, setResult] = useState(null);
   const [currentStep, setCurrentStep] = useState(0);
   const [activeTab, setActiveTab] = useState(0);
+  const { language } = useLanguage();
+  const texts = translations[language];
 
-  const steps = ['Instructions', 'Upload Image', 'Results'];
+  const steps = [texts.instructions, texts.uploadImage, texts.analysisResults];
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -110,8 +114,7 @@ const CropDiseaseDetection = () => {
       <Box
         className="min-h-screen flex items-center justify-center bg-gradient-to-b from-green-400 to-blue-500 p-8"
         style={{
-          // backgroundImage: `url(${cropImage})`,
-          background : 'white',
+          background: 'white',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
@@ -119,7 +122,7 @@ const CropDiseaseDetection = () => {
         <Card className="max-w-4xl w-full mx-auto rounded-xl shadow-2xl overflow-hidden">
           <CardContent className="p-8">
             <Typography variant="h3" component="h1" className="text-green-800 mb-6">
-              Crop Disease Detection
+              {texts.title}
             </Typography>
 
             <Stepper activeStep={currentStep} alternativeLabel className="mb-8">
@@ -139,24 +142,24 @@ const CropDiseaseDetection = () => {
                   exit={{ opacity: 0, x: 20 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <Typography variant="h5" className="mb-4">Instructions</Typography>
+                  <Typography variant="h5" className="mb-4">{texts.instructions}</Typography>
                   <Grid container spacing={4}>
                     <Grid item xs={12} md={6}>
                       <Card variant="outlined">
                         <CardContent>
-                          <Typography variant="h6" className="mb-2">Do's</Typography>
+                          <Typography variant="h6" className="mb-2">{texts.dos}</Typography>
                           <List>
                             <ListItem>
                               <ListItemIcon><CheckCircleOutline color="primary" /></ListItemIcon>
-                              <ListItemText primary="Take a clear picture of the plant" />
+                              <ListItemText primary={texts.clearPicture} />
                             </ListItem>
                             <ListItem>
                               <ListItemIcon><CheckCircleOutline color="primary" /></ListItemIcon>
-                              <ListItemText primary="Ensure the image is well-lit" />
+                              <ListItemText primary={texts.wellLit} />
                             </ListItem>
                             <ListItem>
                               <ListItemIcon><CheckCircleOutline color="primary" /></ListItemIcon>
-                              <ListItemText primary="Include the entire plant in the frame" />
+                              <ListItemText primary={texts.entirePlant} />
                             </ListItem>
                           </List>
                         </CardContent>
@@ -165,19 +168,19 @@ const CropDiseaseDetection = () => {
                     <Grid item xs={12} md={6}>
                       <Card variant="outlined">
                         <CardContent>
-                          <Typography variant="h6" className="mb-2">Don'ts</Typography>
+                          <Typography variant="h6" className="mb-2">{texts.donts}</Typography>
                           <List>
                             <ListItem>
                               <ListItemIcon><ErrorOutline color="error" /></ListItemIcon>
-                              <ListItemText primary="Avoid blurry images" />
+                              <ListItemText primary={texts.blurryImages} />
                             </ListItem>
                             <ListItem>
                               <ListItemIcon><ErrorOutline color="error" /></ListItemIcon>
-                              <ListItemText primary="Do not include other objects in the frame" />
+                              <ListItemText primary={texts.otherObjects} />
                             </ListItem>
                             <ListItem>
                               <ListItemIcon><ErrorOutline color="error" /></ListItemIcon>
-                              <ListItemText primary="Avoid taking pictures in low light" />
+                              <ListItemText primary={texts.lowLight} />
                             </ListItem>
                           </List>
                         </CardContent>
@@ -191,7 +194,7 @@ const CropDiseaseDetection = () => {
                       onClick={nextStep}
                       fullWidth
                     >
-                      Next
+                      {texts.next}
                     </Button>
                   </Box>
                 </motion.div>
@@ -205,7 +208,7 @@ const CropDiseaseDetection = () => {
                   exit={{ opacity: 0, x: 20 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <Typography variant="h5" className="mb-4">Upload Image</Typography>
+                  <Typography variant="h5" className="mb-4">{texts.uploadImage}</Typography>
                   <Box className="mb-4">
                     <input
                       accept="image/*"
@@ -221,7 +224,7 @@ const CropDiseaseDetection = () => {
                         startIcon={<CloudUpload />}
                         fullWidth
                       >
-                        Choose File
+                        {texts.chooseFile}
                       </Button>
                     </label>
                   </Box>
@@ -244,7 +247,7 @@ const CropDiseaseDetection = () => {
                   )}
                   <Box className="flex justify-between">
                     <Button variant="outlined" onClick={prevStep}>
-                      Back
+                      {texts.back}
                     </Button>
                     <Button
                       variant="contained"
@@ -252,7 +255,7 @@ const CropDiseaseDetection = () => {
                       onClick={handleSubmit}
                       disabled={!file || loading}
                     >
-                      {loading ? <CircularProgress size={24} /> : 'Analyze Crop'}
+                      {loading ? <CircularProgress size={24} /> : texts.analyzeCrop}
                     </Button>
                   </Box>
                 </motion.div>
@@ -266,36 +269,36 @@ const CropDiseaseDetection = () => {
                   exit={{ opacity: 0, x: 20 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <Typography variant="h5" className="mb-4">Analysis Results</Typography>
+                  <Typography variant="h5" className="mb-4">{texts.analysisResults}</Typography>
                   <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
                     <Tabs value={activeTab} onChange={handleTabChange} aria-label="disease analysis tabs">
-                      <Tab label="Disease Info" icon={<BugReport />} iconPosition="start" />
-                      <Tab label="Symptoms" icon={<LocalFlorist />} iconPosition="start" />
-                      <Tab label="Treatment" icon={<Recommend />} iconPosition="start" />
+                      <Tab label={texts.diseaseInfo} icon={<BugReport />} iconPosition="start" />
+                      <Tab label={texts.symptoms} icon={<LocalFlorist />} iconPosition="start" />
+                      <Tab label={texts.treatment} icon={<Recommend />} iconPosition="start" />
                     </Tabs>
                   </Box>
 
                   <TabPanel value={activeTab} index={0}>
-                    <Typography variant="h6" className="mb-2">Disease Information</Typography>
+                    <Typography variant="h6" className="mb-2">{texts.diseaseInformation}</Typography>
                     <List>
                       <ListItem>
                         <ListItemIcon><BugReport color="error" /></ListItemIcon>
-                        <ListItemText primary="Disease" secondary={result.diseaseName} />
+                        <ListItemText primary={texts.disease} secondary={result.diseaseName} />
                       </ListItem>
                       <ListItem>
                         <ListItemIcon><Grass color="primary" /></ListItemIcon>
-                        <ListItemText primary="Causes" secondary={result.causes} />
+                        <ListItemText primary={texts.causes} secondary={result.causes} />
                       </ListItem>
                     </List>
                   </TabPanel>
 
                   <TabPanel value={activeTab} index={1}>
-                    <Typography variant="h6" className="mb-2">Symptoms</Typography>
+                    <Typography variant="h6" className="mb-2">{texts.symptoms}</Typography>
                     <Typography variant="body1">{result.symptoms}</Typography>
                   </TabPanel>
 
                   <TabPanel value={activeTab} index={2}>
-                    <Typography variant="h6" className="mb-2">Suggested Actions</Typography>
+                    <Typography variant="h6" className="mb-2">{texts.suggestedActions}</Typography>
                     <List>
                       {result.suggestions.map((suggestion, index) => (
                         <ListItem key={index}>
@@ -304,7 +307,7 @@ const CropDiseaseDetection = () => {
                         </ListItem>
                       ))}
                     </List>
-                    <Typography variant="h6" className="mt-4 mb-2">Recommended Fertilizers</Typography>
+                    <Typography variant="h6" className="mt-4 mb-2">{texts.recommendedFertilizers}</Typography>
                     <List>
                       {result.fertilizers.map((fertilizer, index) => (
                         <ListItem key={index}>
@@ -317,7 +320,7 @@ const CropDiseaseDetection = () => {
 
                   <Box className="mt-6">
                     <Button variant="contained" color="primary" onClick={prevStep} fullWidth>
-                      Back to Upload
+                      {texts.backToUpload}
                     </Button>
                   </Box>
                 </motion.div>

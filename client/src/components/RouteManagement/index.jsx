@@ -5,7 +5,7 @@ import Sidebar from '../Sidebar';
 import Home from "../Home";
 import CropDiseaseDetection from "../DiseasePrediction";
 import CropYieldPrediction from "../YieldPrediction";
-import CropRecommendationSystem from "../RecommendationSystem/index2";
+import CropRecommendationSystem from "../RecommendationSystem";
 import Dashboard from "../Dashboard";
 import VoiceRecognition from "./VoiceRecognition";
 import Profile from "../Profile";
