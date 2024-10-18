@@ -93,21 +93,21 @@ const PredictPage = () => {
 
 
     return (
-        <div className="container mx-auto p-36">
+        <div className="container mx-auto p-24">
 
-            {loading && <p>Loading predictions...</p>}  {/* Show loading while waiting for response */}
+            {loading && <p>Loading predictions...</p>}
 
             {predictionResult && cropDetails && (
                 <>
+                    <div className='mb-10'>
+                        <p className="font-extrabold text-4xl text-green-500">{cropDetails.type}</p>
+                    </div>
                     <div className="bg-white border rounded-lg shadow flex flex-col gap-10 p-6">
                         <p><strong className='text-2xl'>Predicted Yield : </strong> <span className='text-3xl font-medium'>{predictionResult.Predicted_Production} kg/ha</span></p>
-                        <div>
-                            <p className="font-extrabold text-4xl text-green-500">{cropDetails.type}</p>
-                        </div>
                     </div>
                     <div className="mt-4">
-                        <h3 className="text-lg font-semibold mt-6">Suggestions:</h3>
-                        <div>{parseSuggestions(predictionResult.suggestions)}</div>
+                        <h3 className="text-xl font-bold my-6">Suggestions:</h3>
+                        <div className='text-lg px-8'>{parseSuggestions(predictionResult.suggestions)}</div>
                     </div>
                 </>
             )}

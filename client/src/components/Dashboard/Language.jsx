@@ -5,6 +5,7 @@ const LanguageDropdown = () => {
   const { language, changeLanguage } = useLanguage();
 
   const handleLanguageChange = (e) => {
+    localStorage.setItem('language', e.target.value)
     changeLanguage(e.target.value);
   };
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import {
   Box,
@@ -55,6 +55,8 @@ const CropDiseaseDetection = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [activeTab, setActiveTab] = useState(0);
 
+  const language = localStorage.getItem('language') || 'en';
+
   const steps = ['Instructions', 'Upload Image', 'Results'];
 
   const handleFileChange = (e) => {
@@ -88,6 +90,25 @@ const CropDiseaseDetection = () => {
   const nextStep = () => setCurrentStep((prevStep) => prevStep + 1);
   const prevStep = () => setCurrentStep((prevStep) => prevStep - 1);
   const handleTabChange = (event, newValue) => setActiveTab(newValue);
+
+  const getResponse = async () => {
+    try {
+      const response = await axios.get('http://127.0.0.1:8000/getResponse', {
+        params: {
+          language: language,
+          page: 'crop_disease' // Assuming 'crop_disease' is a parameter you want to pass
+        }
+      });
+      console.log(response.data); // Handle the response as needed
+    } catch (error) {
+      console.error('Error getting response:', error);
+    }
+  };
+  
+
+  useEffect(() => {
+    getResponse();
+  }, []);
 
   const TabPanel = ({ children, value, index }) => (
     <AnimatePresence mode="wait">

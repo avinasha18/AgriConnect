@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import axios from "axios"
 import { useNavigate } from 'react-router-dom';
 import { UilMicrophone, UilMicrophoneSlash } from '@iconscout/react-unicons';
 
@@ -6,40 +7,35 @@ const VoiceRecognition = () => {
     const [isListening, setIsListening] = useState(false);
     const navigate = useNavigate();
 
+    const language = localStorage.getItem('language')
+
+    const getResponse = async () => {
+        try {
+            const response = await axios.get('http://127.0.0.1:8000/callRoutes', {
+                params: {
+                    language: language,
+                }
+            });
+            const route = response.data.description.toLowerCase();
+            handleCommand(route)
+        } catch (error) {
+            console.error('Error getting response:', error);
+        }
+    };
+
     useEffect(() => {
         if (isListening) {
-            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            recognition.lang = 'en-US'; // English language code
-            recognition.interimResults = false;
-            recognition.maxAlternatives = 1;
-
-            recognition.onresult = (event) => {
-                const transcript = event.results[0][0].transcript.toLowerCase();
-                handleCommand(transcript);
-            };
-
-            recognition.onerror = (event) => {
-                console.error('Speech recognition error:', event.error);
-            };
-
-            recognition.onend = () => {
-                setIsListening(false);
-            };
-
-            recognition.start();
+            getResponse();
         }
     }, [isListening]);
 
     const handleCommand = (command) => {
         if (command.includes('open crop disease') || command.includes('disease')) {
             navigate('/disease');
-            speak('Opened crop disease page');
         } else if (command.includes('open crop recommendation') || command.includes('recommendation')) {
             navigate('/recommendation');
-            speak('Opened crop recommendation page');
         } else if (command.includes('open crop yield') || command.includes('yield')) {
             navigate('/yield');
-            speak('Opened crop yield page');
         } else if (command.includes('open dashboard') || command.includes('dashboard')) {
             navigate('/dashboard');
             speak('Opened dashboard page');

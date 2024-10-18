@@ -11,6 +11,7 @@ import analysisAnimation from './AI.json';
 const YieldPrediction = () => {
   const [error, setError] = useState(null);
   const [farmer, setFarmer] = useState(null); // State to hold farmer profile
+  const language = localStorage.getItem('language');
   const navigate = useNavigate();
 
   const farmerID = localStorage.getItem('userId');
@@ -79,6 +80,25 @@ const YieldPrediction = () => {
     });
   };
 
+  const getResponse = async () => {
+    try {
+      const response = await axios.get('http://127.0.0.1:8000/getResponse', {
+        params: {
+          language: language,
+          page: 'yield_prediction'
+        }
+      });
+      console.log(response.data); // Handle the response as needed
+    } catch (error) {
+      console.error('Error getting response:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (language) {
+      getResponse();
+    }
+  }, [language]);
 
 
   const fetchWeatherData = async (latitude, longitude) => {
@@ -100,7 +120,7 @@ const YieldPrediction = () => {
   return (
     <div className="flex flex-col items-center p-4">
 
-      <h1 className='flex-start w-full px-20 py-10 tracking-wider font-extrabold text-3xl'>Yield Prediction</h1>
+      <h1 className='flex-start w-full px-20 py-10 kanit-regular text-3xl'>Yield Prediction</h1>
       {farmer && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
           {farmer.crops.map((crop, index) => (

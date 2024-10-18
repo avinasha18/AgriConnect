@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import {
@@ -60,6 +60,7 @@ const cropImages = {
 };
 
 const CropRecommendationSystem = () => {
+
   const [step, setStep] = useState(0);
   const [formData, setFormData] = useState({
     N: '',
@@ -74,6 +75,7 @@ const CropRecommendationSystem = () => {
   const [loadingStage, setLoadingStage] = useState('');
   const [recommendedCrops, setRecommendedCrops] = useState([]);
   const [showManualForm, setShowManualForm] = useState(false);
+  const language = localStorage.getItem('language'); // or get from props/context
   const navigate = useNavigate();
 
   const handleInputChange = (e) => {
@@ -83,6 +85,27 @@ const CropRecommendationSystem = () => {
       [name]: value,
     }));
   };
+
+  const getResponse = async () => {
+    try {
+      const response = await axios.get('http://127.0.0.1:8000/getResponse', {
+        params: {
+          language: language,
+          page: 'recommendation_system' 
+        }
+      });
+      console.log(response.data); // Handle the response as needed
+    } catch (error) {
+      console.error('Error getting response:', error);
+    }
+  };
+  
+
+  useEffect(() => {
+    if (language) {
+      getResponse();
+    }
+  }, [language]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
