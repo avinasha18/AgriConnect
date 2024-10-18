@@ -11,13 +11,15 @@ import {
 } from '@iconscout/react-unicons';
 import { FaSeedling } from "react-icons/fa";
 
+import { MdArrowBackIosNew } from "react-icons/md";
+import { IoIosArrowForward } from "react-icons/io";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import './index.css';
 import { useLanguage } from './../../hooks/languageContext';
 
 const SidebarIcon = ({ icon: Icon, active, text, to, expanded }) => (
   <Link to={to}>
-    <div className={`p-3 rounded-full flex items-center ${active ? 'bg-green-100' : 'hover:bg-gray-100'} transition-all duration-300 ease-in-out`}>
+    <div className={`p-3 rounded-xl flex items-center ${active ? 'bg-green-100' : 'hover:bg-gray-100'} transition-all duration-300 ease-in-out`}>
       <Icon size={24} className={active ? 'text-green-600' : 'text-gray-600'} />
       {expanded && <span className="ml-3 text-gray-600">{text}</span>}
     </div>
@@ -104,7 +106,7 @@ const Sidebar = () => {
       {/* Sidebar Toggle Button */}
       <div className="flex items-center justify-center w-full mt-4">
         <button onClick={toggleSidebar} className="text-gray-600 hover:text-green-600 transition-all duration-300 ease-in-out">
-          {expanded ? '<' : '>'}
+          {expanded ? <MdArrowBackIosNew /> : <IoIosArrowForward />}
         </button>
       </div>
 
