@@ -1,0 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+:root {
+  --yellow: linear-gradient(180deg, #F8D49A -146.42%, #FAD79D -46.42%);
+  --orange: #fca61f;
+  --black: #242d49;
+  --gray: #788097;
+  --purple: linear-gradient(180deg, #BB67FF 0%, #C484F3 100%);
+  --pink: #FF919D;
+  --blue: #001756;
+  --glass: rgba(255, 255, 255, 0.54);
+  --boxShadow: 0px 19px 60px rgb(0 0 0 / 8%);
+  --smboxShadow: -79px 51px 60px rgba(0, 0, 0, 0.08);
+  --activeItem: #00a6ff8d;
+}
+
+.App {
+  color: var(--black);
+  background: linear-gradient( #8fe593 29.63%,   #6fd48f 90.85%);
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', sans-serif;
+  animation: gradientBackground 2s ease infinite; /* Background color animation */
+}
+
+.AppGlass {
+  display: grid;
+  height: 100vh;
+  width: 100%;
+  gap: 16px;
+  color: white;
+  grid-template-columns: 14rem auto;
+  overflow: hidden;
+  /* background-color: #E2EFE3; */
+  box-shadow: var(--boxShadow);
+  transition: transform 0.3s ease-in-out; /* Smooth transitions for responsiveness */
+}
+
+.kanit-regular {
+  font-family: "Kanit", sans-serif;
+  font-weight: 800;
+  font-style: normal;
+}
+
+@keyframes gradientBackground {
+  0% {
+    background: linear-gradient(106.37deg, #8fe593 29.63%, #d1a367 51.55%, #6fd48f 90.85%);
+  }
+  /* 50% {
+    background: linear-gradient(106.37deg, #fca61f 29.63%, #ff919d 51.55%, #001756 90.85%);
+  } */
+  100% {
+    background: linear-gradient(106.37deg, #8fe593 29.63%, #d1a367 51.55%, #6fd48f 90.85%);
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .AppGlass {
+    grid-template-columns: 10% 50% auto;
+    overflow-y: scroll;
+    transition: transform 0.3s ease-in-out; /* Smooth responsiveness */
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .AppGlass {
+    grid-template-columns: 1fr;
+    transition: transform 0.3s ease-in-out; /* Smoother transitions for mobile */
+  }
+}
