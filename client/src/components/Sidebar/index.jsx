@@ -16,7 +16,8 @@ import { IoIosArrowForward } from "react-icons/io";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import './index.css';
 import { useLanguage } from './../../hooks/languageContext';
-
+import { useDispatch } from "react-redux";
+import {logout} from '../../hooks/authSlice'
 const SidebarIcon = ({ icon: Icon, active, text, to, expanded }) => (
   <Link to={to}>
     <div className={`p-3 rounded-xl flex items-center ${active ? 'bg-green-100' : 'hover:bg-gray-100'} transition-all duration-300 ease-in-out`}>
@@ -32,6 +33,7 @@ const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { language } = useLanguage();
+  const dispatch = useDispatch()
 
   const texts = {
     en: {
@@ -71,8 +73,11 @@ const Sidebar = () => {
   };
 
   const handleLogout = () => {
+    dispatch(clearToken);
+    dispatch(logout)
     localStorage.removeItem('token');
     localStorage.removeItem('userId');
+
     navigate('/login');
   };
 

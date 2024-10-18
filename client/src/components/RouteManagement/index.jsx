@@ -5,13 +5,14 @@ import Sidebar from '../Sidebar';
 import Home from "../Home";
 import CropDiseaseDetection from "../DiseasePrediction";
 import CropYieldPrediction from "../YieldPrediction";
-import CropRecommendationSystem from "../RecommendationSystem/index2";
-import Dashboard from "../Dashboard/index2";
+import CropRecommendationSystem from "../RecommendationSystem";
+import Dashboard from "../Dashboard";
 import VoiceRecognition from "./VoiceRecognition";
 import Profile from "../Profile";
 import MyCrops from "../MyCrops";
 import FertilizerData from "../FertilizerData";
 import DetailView from "../RecommendationSystem/DetailView";
+import VoiceInputForm from "../VoiceInputForm";
 import PredictPage from "../YieldPrediction/PredictPage";
 
 const RouteManagement = ({  }) => {
@@ -37,6 +38,8 @@ const RouteManagement = ({  }) => {
                         <Route path='/yield-predict' element={<PredictPage />}/>
                         <Route path='/crops' element={<MyCrops />} />
                         <Route path='/crop/:name' element={<DetailView/>} />
+                        <Route path="/voice-input-form/:userId" element={<VoiceInputForm />} />
+
                         <Route
                             path='/dashboard'
                             element={

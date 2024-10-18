@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
-import { setToken } from '../../services/authSlice';
+import { setToken } from '../../services/AuthSlice';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
@@ -54,7 +54,7 @@ const Login = () => {
             dispatch(setToken(token));
 
             // Redirect the user to the dashboard
-            navigate('/dashboard'); // Redirect to dashboard or another page
+            navigate('/crops'); // Redirect to dashboard or another page
         } catch (error) {
             console.error('Error logging in:', error);
             setErrorMessage('Invalid credentials. Please try again.');

@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
+import Lottie from 'lottie-react';
+import analyzingAnimation from './AI.json'; // Replace with your animation file
+import fetchingAnimation from './plant.json'; // Replace with your animation file
 
 const FertilizerData = () => {
   const location = useLocation();
@@ -19,9 +22,11 @@ const FertilizerData = () => {
   const [fertilizerInfo, setFertilizerInfo] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [stage, setStage] = useState('');
 
   // Function to fetch the crop details based on the crop ID
   const fetchCropDetails = async () => {
+    setStage('Analyzing crop data');
     try {
       const response = await axios.get(`http://localhost:5000/crops/${id}`);
       const cropData = response.data;
@@ -40,11 +45,14 @@ const FertilizerData = () => {
     } catch (err) {
       setError('Failed to fetch crop details.');
       console.error(err);
+    } finally {
+      setStage('');
     }
   };
 
   // Function to fetch fertilizer data based on the inputData
   const fetchFertilizerData = async () => {
+    setStage('Fetching best fertilizers');
     setLoading(true);
     setError(null);
 
@@ -57,6 +65,7 @@ const FertilizerData = () => {
       console.error(err);
     } finally {
       setLoading(false);
+      setStage('');
     }
   };
 
@@ -74,7 +83,12 @@ const FertilizerData = () => {
 
   return (
     <div className="flex flex-col items-center p-4">
-      {loading && <p className="text-lg text-gray-700">Loading...</p>}
+      {loading && (
+        <div className="text-lg text-gray-700 flex flex-col items-center">
+          <p>{stage}</p>
+          <Lottie animationData={stage === 'Analyzing crop data' ? analyzingAnimation : fetchingAnimation} />
+        </div>
+      )}
       {fertilizerInfo && (
         <motion.div
           initial={{ opacity: 0 }}

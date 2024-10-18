@@ -1,12 +1,12 @@
 // dashboardController.js
 
 import { Crop } from '../models/Crop.js';
-import { Farmer } from '../models/User.js';
+import { Farmer,Feedback } from '../models/User.js';
 import axios from 'axios';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-
+import twilio from 'twilio'
 const genAI = new GoogleGenerativeAI('AIzaSyCaLGMi6zxrhDRHTdARy_oqgvTP6vojJhk');
-
+import config from '../config.js';
 export const getDashboardData = async (req, res) => {
   try {
     const farmerId = req.params.farmerId;
@@ -127,5 +127,76 @@ export const updateCropYield = async (req, res) => {
   } catch (error) {
     console.error('Error updating crop yield:', error);
     res.status(500).json({ message: 'Error updating crop yield' });
+  }
+};
+
+
+
+const accountSid = process.env.SID;
+const authToken = process.env.AUTH;
+const client = twilio(accountSid, authToken);
+
+export const sendNotification = async (req, res) => {
+  const { userId, weatherData } = req.body;
+
+  try {
+    const farmer = await Farmer.findById(userId);
+    if (!farmer) {
+      return res.status(404).json({ message: 'Farmer not found' });
+    }
+
+    const message = `
+    వాతావరణం డేటా:
+    ఉష్ణోగ్రత: ${weatherData.current.temp_c}°C
+    తేమ: ${weatherData.current.humidity}%
+    వర్షపాతం: ${weatherData.current.precip_mm}mm
+
+    దయచేసి ఫీడ్‌బ్యాక్ ఇవ్వండి: http://localhost:5173/voice-input-form/${userId}
+  `;
+
+    const fixedphone = `+${91}${farmer.phone}`
+    await client.messages.create({
+      body: message,
+      from: process.env.NUMBER,
+      to: fixedphone,
+    });
+
+    res.status(200).json({ message: 'Notification sent successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to send notification' });
+  }
+};
+
+
+export const createFeedback = async (req, res) => {
+  const { farmerId, farmerName, cropType, cropYield, review } = req.body;
+
+  try {
+    const newFeedback = new Feedback({
+      farmerId,
+      farmerName,
+      cropType,
+      cropYield,
+      review,
+    });
+
+    await newFeedback.save();
+    res.status(201).json({ message: 'Feedback submitted successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to submit feedback' });
+  }
+};
+
+export const getFeedback = async (req, res) => {
+  const { farmerId } = req.params;
+
+  try {
+    const feedback = await Feedback.find({ farmerId });
+    res.status(200).json(feedback);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to retrieve feedback' });
   }
 };
