@@ -7,6 +7,8 @@ import {
   UilChart,
   UilSignOutAlt,
 } from '@iconscout/react-unicons';
+
+
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import './index.css';
 import { useLanguage } from './../../hooks/languageContext';
@@ -78,7 +80,7 @@ const Sidebar = () => {
       setActiveTab('disease');
     } else if (path === '/price') {
       setActiveTab('price');
-    } else if (path === '/yield') {
+    } else if (path === '/yield' || path === '/yield-predict') {
       setActiveTab('yield');
     } else if (path === '/profile') {
       setActiveTab('profile');

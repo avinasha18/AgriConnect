@@ -12,6 +12,7 @@ import Profile from "../Profile";
 import MyCrops from "../MyCrops";
 import FertilizerData from "../FertilizerData";
 import DetailView from "../RecommendationSystem/DetailView";
+import PredictPage from "../YieldPrediction/PredictPage";
 
 const RouteManagement = ({  }) => {
     const location = useLocation();
@@ -33,6 +34,7 @@ const RouteManagement = ({  }) => {
                         <Route path='/recommendation' element={<CropRecommendationSystem />} />
                         <Route path='/disease' element={<CropDiseaseDetection />} />
                         <Route path='/yield' element={<CropYieldPrediction />} />
+                        <Route path='/yield-predict' element={<PredictPage />}/>
                         <Route path='/crops' element={<MyCrops />} />
                         <Route path='/crop/:name' element={<DetailView/>} />
                         <Route
