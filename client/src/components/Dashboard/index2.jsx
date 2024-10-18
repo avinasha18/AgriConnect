@@ -183,6 +183,7 @@ const Dashboard = () => {
             params: { latitude, longitude },
           }
         );
+        console.log(response.data)
         setDashboardData(response.data);
       } catch (err) {
         setError("Failed to fetch dashboard data");
@@ -196,22 +197,44 @@ const Dashboard = () => {
   }, []);
 
   const handleDayClick = (day) => {
-    setSelectedDate(day);
+    // Get the current month and year from the displayed calendar
+    const month = new Date().getMonth(); // Month index (0 for Jan, 1 for Feb, etc.)
+    const year = new Date().getFullYear();
+  
+    // Create a full date object from day, month, and year
+    const fullDate = new Date(year, month, day);
+  
+    // Format the date as YYYY-MM-DD (or any format you prefer)
+    const formattedDate = fullDate.toISOString().split('T')[0]; 
+  
+    console.log('Selected Date:', formattedDate);
+  
+    // Save selected date in both state and localStorage
+    setSelectedDate(formattedDate);
+    localStorage.setItem('selectedDate', formattedDate);
+  
     setShowModal(true);
   };
+  
 
   const handleModalClose = () => {
     setShowModal(false);
     setSelectedDate(null);
   };
-
   const handleActivitySubmit = async (activities) => {
     try {
+      console.log('activity ')
+      const selectedDate = localStorage.getItem("selectedDate"); // Get the selected date from localStorage
+      if (!selectedDate || isNaN(new Date(selectedDate))) {
+        throw new Error('Invalid date');
+      }
+  
       await axios.post(`http://localhost:5000/dashboard/update-farming`, {
-        farmerId: localStorage.getItem("userId"), // Replace with actual farmer ID
-        date: selectedDate,
+        farmerId: localStorage.getItem("userId"),
+        date: selectedDate,  // Ensure the date is valid
         activities,
       });
+  
       // Refresh dashboard data
       const response = await axios.get(`http://localhost:5000/dashboard/${localStorage.getItem("userId")}`);
       setDashboardData(response.data);
@@ -220,6 +243,7 @@ const Dashboard = () => {
     }
     handleModalClose();
   };
+  
 
   if (loading) {
     return <Loader />;
@@ -441,7 +465,7 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          <Card className="col-span-1">
+          {/* <Card className="col-span-1">
             <CardHeader className="flex justify-between items-center">
               <CardTitle>{texts[language].farmingHabits}</CardTitle>
               <button className="text-green-500 hover:text-green-600 flex items-center">
@@ -472,9 +496,9 @@ const Dashboard = () => {
                 ))}
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
 
-          <Card className="col-span-2">
+          <Card className="col-span-1">
             <CardHeader>
               <CardTitle>{texts[language].aiSuggestions}</CardTitle>
             </CardHeader>

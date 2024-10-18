@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from "react";
 import {
-  UilEstate,
-  UilClipboardAlt,
-  UilUsersAlt,
-  UilPackage,
-  UilChart,
+  UilUserCircle,
+  UilApps,
+  
+  UilLightbulbAlt,
+  UilStethoscope,
+  UilMoneyBill,
+  UilAnalytics,
   UilSignOutAlt,
 } from '@iconscout/react-unicons';
+import { FaSeedling } from "react-icons/fa";
+
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import './index.css';
 import { useLanguage } from './../../hooks/languageContext';
@@ -39,22 +43,24 @@ const Sidebar = () => {
       logout: 'Logout',
     },
     hi: {
-      profile: 'डैशबोर्ड',
+      profile: 'प्रोफ़ाइल',
       dashboard: 'डैशबोर्ड',
+      crops: 'मेरी फसलें',
       recommendation: 'सिफारिश',
       disease: 'फसल रोग',
       price: 'बाजार मूल्य',
-      yield: 'उत्पादन भविष्यवाणी',
+      yield: 'उपज पूर्वानुमान',
       logout: 'लॉगआउट',
     },
     te: {
-      profile: 'డాష్‌బోర్డ్',
+      profile: 'ప్రొఫైల్',
       dashboard: 'డాష్‌బోర్డ్',
+      crops: 'నా పంటలు',
       recommendation: 'సిఫార్సు',
       disease: 'పంట రోగం',
       price: 'మార్కెట్ ధర',
-      yield: 'ఉత్పత్తి పూర్వాంజ్ఞానం',
-      logout: 'లాగ్‌అవుట్',
+      yield: 'ఉత్పత్తి అంచనా',
+      logout: 'లాగ్ అవుట్',
     },
   };
 
@@ -83,15 +89,15 @@ const Sidebar = () => {
     } else if (path === '/profile') {
       setActiveTab('profile');
     }
-    else if(path == '/crops'){
+    else if(path === '/crops'){
       setActiveTab('crops')
     }
   }, [location]);
 
   return (
-    <div className={`bg-white  border border-r-2 overflow-y-auto  shadow-md flex flex-col items-center py-8 space-y-8 transition-all duration-300 ease-in-out ${expanded ? 'w-64' : 'w-20'}`}>
+    <div className={`bg-white border border-r-2 overflow-y-auto shadow-md flex flex-col items-center py-8 space-y-8 transition-all duration-300 ease-in-out ${expanded ? 'w-[300px]' : 'w-20'}`}>
       {/* Sidebar Logo */}
-      <div className={`flex items-center justify-center text-white font-bold text-xl transition-all duration-300 ease-in-out ${expanded ? 'w-48 h-12 bg-green-500 px-4 rounded-2xl' : 'w-12 h-12 bg-green-500 rounded-full animate-pulse'}`}>
+      <div className={`flex items-center justify-center text-white font-bold text-xl transition-all duration-300 ease-in-out ${expanded ? 'w-46 h-12 bg-green-500 px-4 rounded-2xl' : 'w-12 h-12 bg-green-500 rounded-full animate-pulse'}`}>
         {expanded ? 'Agri Connect' : 'AC'}
       </div>
 
@@ -103,14 +109,13 @@ const Sidebar = () => {
       </div>
 
       {/* Sidebar Items */}
-      <SidebarIcon to='/profile' icon={UilEstate} active={activeTab === 'profile'} text={texts[language].profile} expanded={expanded} />
-
-      <SidebarIcon to='/crops' icon={UilChart} active={activeTab === 'crops'} text={texts[language].crops} expanded={expanded} />
-      <SidebarIcon to='/dashboard' icon={UilEstate} active={activeTab === 'dashboard'} text={texts[language].dashboard} expanded={expanded} />
-      <SidebarIcon to='/recommendation' icon={UilClipboardAlt} active={activeTab === 'recommendation'} text={texts[language].recommendation} expanded={expanded} />
-      <SidebarIcon to='/disease' icon={UilUsersAlt} active={activeTab === 'disease'} text={texts[language].disease} expanded={expanded} />
-      <SidebarIcon to='/price' icon={UilPackage} active={activeTab === 'price'} text={texts[language].price} expanded={expanded} />
-      <SidebarIcon to='/yield' icon={UilChart} active={activeTab === 'yield'} text={texts[language].yield} expanded={expanded} />
+      <SidebarIcon to='/profile' icon={UilUserCircle} active={activeTab === 'profile'} text={texts[language].profile} expanded={expanded} />
+      <SidebarIcon to='/crops' icon={FaSeedling} active={activeTab === 'crops'} text={texts[language].crops} expanded={expanded} />
+      <SidebarIcon to='/dashboard' icon={UilApps} active={activeTab === 'dashboard'} text={texts[language].dashboard} expanded={expanded} />
+      <SidebarIcon to='/recommendation' icon={UilLightbulbAlt} active={activeTab === 'recommendation'} text={texts[language].recommendation} expanded={expanded} />
+      <SidebarIcon to='/disease' icon={UilStethoscope} active={activeTab === 'disease'} text={texts[language].disease} expanded={expanded} />
+      <SidebarIcon to='/price' icon={UilMoneyBill} active={activeTab === 'price'} text={texts[language].price} expanded={expanded} />
+      <SidebarIcon to='/yield' icon={UilAnalytics} active={activeTab === 'yield'} text={texts[language].yield} expanded={expanded} />
 
       {/* Logout Button */}
       <div className="mt-auto">

@@ -12,7 +12,7 @@ export const getDashboardData = async (req, res) => {
     const farmerId = req.params.farmerId;
     const { latitude, longitude, language } = req.query;
     const farmer = await Farmer.findById(farmerId).populate('crops');
-
+    console.log(farmer)
     if (!farmer) {
       return res.status(404).json({ message: 'Farmer not found' });
     }
@@ -60,29 +60,53 @@ export const getDashboardData = async (req, res) => {
     res.status(500).json({ message: 'Error fetching dashboard data' });
   }
 };
-
 export const updateFarmingDay = async (req, res) => {
   try {
     const { farmerId, date, activities } = req.body;
-    const farmer = await Farmer.findById(farmerId);
-    console.log(farmer)
 
+    console.log('Received Date:', date);
+    console.log('Parsed Date:', new Date(date));
+    console.log('Farmer ID:', farmerId);
+
+    const parsedDate = new Date(date);
+    if (isNaN(parsedDate)) {
+      return res.status(400).json({ message: 'Invalid date format' });
+    }
+
+    // Fetch the farmer by ID
+    const farmer = await Farmer.findById(farmerId);
     if (!farmer) {
       return res.status(404).json({ message: 'Farmer not found' });
     }
 
-    const existingDayIndex = farmer.farmingDays.findIndex(day => day.date.toISOString().split('T')[0] === date);
+    console.log('Farmer fetched successfully:', farmer);
 
-    if (existingDayIndex !== -1) {
-      farmer.farmingDays[existingDayIndex].activities = activities;
-    } else {
-      farmer.farmingDays.push({ date: new Date(date), activities });
+    // Check if farmingDays exists and is an array
+    if (!Array.isArray(farmer.farmingDays)) {
+      return res.status(500).json({ message: 'farmingDays field is missing or not an array' });
     }
 
+    console.log('Farmer Farming Days:', farmer.farmingDays);
+
+    // Find the existing day by comparing only the date (ignoring time)
+    const existingDayIndex = farmer.farmingDays.findIndex(day => 
+      day.date.toISOString().split('T')[0] === parsedDate.toISOString().split('T')[0]
+    );
+
+    if (existingDayIndex !== -1) {
+      // Update activities for the existing day
+      farmer.farmingDays[existingDayIndex].activities = activities;
+    } else {
+      // Add a new farming day with the parsed date and activities
+      farmer.farmingDays.push({ date: parsedDate, activities });
+    }
+
+    // Save the updated farmer document
     await farmer.save();
     res.json({ message: 'Farming day updated successfully', updatedFarmingDays: farmer.farmingDays });
+
   } catch (error) {
-    console.error('Error updating farming day:', error);
+    console.error('Error updating farming day:', error.message);
     res.status(500).json({ message: 'Error updating farming day' });
   }
 };
