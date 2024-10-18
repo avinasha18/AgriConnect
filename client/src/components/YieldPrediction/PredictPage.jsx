@@ -1,13 +1,20 @@
 import React, { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
-import Lottie from 'react-lottie';  // Import react-lottie
-import loadingAnimation from './Loading.json';  // Import the Lottie file
+import Lottie from 'react-lottie';
+import loadingAnimation from './Loading.json';
+import analysisAnimation from './AI.json';
+import { Card, CardContent, CardHeader, CardTitle } from "./Card";
+import { Progress } from "./Progress";
+import { Badge } from "./Badge";
+import { Droplet, Thermometer, Cloud, Calendar, Leaf, Map, Ruler } from 'lucide-react';
 
 const PredictPage = () => {
     const location = useLocation();
-    const inputData = location.state || {};  // Get the data passed from previous page
+    const inputData = location.state || {};
     const [cropDetails, setCropDetails] = useState({});
+    const [loadingStage, setLoadingStage] = useState('initial');
     const [predictionInput, setPredictionInput] = useState({
         State_Name: inputData.location || '',
         District_Name: 'ANANTAPUR',
@@ -20,17 +27,21 @@ const PredictPage = () => {
         Area: inputData.farmSize || 0,
     });
 
-    const [predictionResult, setPredictionResult] = useState(null);  // State to hold prediction result
-    const [error, setError] = useState(null);  // State to handle errors
-    const [loading, setLoading] = useState(true);  // State to show loading
+    const [predictionResult, setPredictionResult] = useState(null);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    // Function to fetch crop details from the backend
+    const getLottieOptions = (animationData) => ({
+        loop: true,
+        autoplay: true,
+        animationData,
+        rendererSettings: { preserveAspectRatio: 'xMidYMid slice' },
+    });
+
     const getCropDetails = async () => {
         try {
             const cropData = await axios.get(`http://localhost:5000/crops/${inputData.crop}`);
-            setCropDetails(cropData.data);  // Set the crop details state
-
-            // Update the prediction input with crop data (e.g., season, soil moisture)
+            setCropDetails(cropData.data);
             setPredictionInput(prevInput => ({
                 ...prevInput,
                 Crop: cropData.data.type,
@@ -44,16 +55,15 @@ const PredictPage = () => {
         }
     };
 
-    // Function to get yield predictions
     const getYieldPredictions = async () => {
         try {
-            // Ensure that necessary fields are filled before making API call
             if (predictionInput.State_Name && predictionInput.Crop) {
+                setLoadingStage('analysis');
                 const response = await axios.post('http://127.0.0.1:5000/yield-predict', predictionInput);
-
-                // Update the state with the response data
-                setPredictionResult(response.data);
-                setLoading(false);
+                setTimeout(() => {
+                    setPredictionResult(response.data);
+                    setLoading(false);
+                }, 5000);
             } else {
                 setError('Missing required data for yield prediction.');
                 setLoading(false);
@@ -66,69 +76,142 @@ const PredictPage = () => {
     };
 
     useEffect(() => {
-        // Fetch crop details first
         if (inputData.crop) {
             getCropDetails();
         }
-    }, [inputData.crop]);  // Trigger when crop changes
+    }, [inputData.crop]);
 
     useEffect(() => {
-        // Once crop details are fetched, proceed to get yield predictions
         if (cropDetails) {
             getYieldPredictions();
         }
-    }, [cropDetails]);  // Trigger when crop details are available
+    }, [cropDetails]);
 
-    // Function to parse the suggestion data
     const parseSuggestions = (suggestions) => {
         return suggestions
             .split('\n')
-            .filter(line => !line.startsWith('##'))  // Ignore lines with '##'
-            .map((line, index) => {
-                if (line.startsWith('*')) {
-                    return <p key={index}><strong>{line.substring(1).trim()}</strong></p>;  // Render bold text, removing the '*' symbol
-                }
-                return <p key={index}>{line}</p>;  // Render normal text
-            });
+            .filter(line => !line.startsWith('##'))
+            .map((line, index) => (
+                <motion.p
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className={line.startsWith('*') ? "font-bold mb-2" : "mb-2"}
+                >
+                    {line.startsWith('*') ? line.substring(1).trim() : line}
+                </motion.p>
+            ));
     };
 
-    // Lottie animation settings
-    const defaultOptions = {
-        loop: true,
-        autoplay: true,
-        animationData: loadingAnimation,
-        rendererSettings: {
-            preserveAspectRatio: 'xMidYMid slice',
-        },
-    };
+    if (loading) {
+        return (
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="flex flex-col items-center justify-center h-screen bg-gradient-to-br from-green-50 to-blue-50"
+            >
+                <Lottie options={getLottieOptions(loadingStage === 'initial' ? loadingAnimation : analysisAnimation)} height={300} width={300} />
+                <motion.p
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.5 }}
+                    className="text-xl mt-4 text-green-800"
+                >
+                    {loadingStage === 'initial' ? 'Loading crop details...' : 'Analyzing and predicting yield...'}
+                </motion.p>
+            </motion.div>
+        );
+    }
 
     return (
-        <div className="container mx-auto p-24">
-            {loading && (
-                <div className="flex justify-center items-center">
-                    <Lottie options={defaultOptions} />  {/* Lottie animation */}
-                </div>
-            )}
-
-            {predictionResult && cropDetails && !loading && (
-                <>
-                    <div className='mb-10'>
-                        <p className="font-extrabold text-4xl text-green-500">{cropDetails.type}</p>
-                    </div>
-                    <div className="bg-white border rounded-lg shadow flex flex-col gap-10 p-6">
-                        <p><strong className='text-2xl'>Predicted Yield : </strong> <span className='text-3xl font-medium'>{predictionResult.Predicted_Production} kg/ha</span></p>
-                    </div>
-                    <div className="mt-4">
-                        <h3 className="text-xl font-bold my-6">Suggestions:</h3>
-                        <div className='text-lg px-8'>{parseSuggestions(predictionResult.suggestions)}</div>
-                    </div>
-                </>
-            )}
-
-            {error && !loading && (
-                <p className="text-red-500">{error}</p>
-            )}
-        </div>
+        <AnimatePresence>
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="container mx-auto p-8 bg-gradient-to-br from-green-50 to-blue-50 min-h-screen"
+            >
+                {predictionResult && cropDetails && !loading && (
+                    <>
+                        <motion.h1
+                            initial={{ y: -50, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            className="text-4xl font-bold text-green-800 mb-8 text-center"
+                        >
+                            Yield Prediction for {cropDetails.type}
+                        </motion.h1>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <motion.div
+                                initial={{ x: -100, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                transition={{ delay: 0.2 }}
+                            >
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="text-2xl text-green-700">Crop Details</CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="space-y-4">
+                                        <div className="flex items-center">
+                                            <Leaf className="h-5 w-5 text-green-500 mr-2" />
+                                            <span>Type: {cropDetails.type}</span>
+                                        </div>
+                                        <div className="flex items-center">
+                                            <Calendar className="h-5 w-5 text-orange-500 mr-2" />
+                                            <span>Season: {cropDetails.season}</span>
+                                        </div>
+                                        <div className="flex items-center">
+                                            <Map className="h-5 w-5 text-blue-500 mr-2" />
+                                            <span>Soil Type: {cropDetails.soilType}</span>
+                                        </div>
+                                        <div className="flex items-center">
+                                            <Ruler className="h-5 w-5 text-purple-500 mr-2" />
+                                            <span>Average Yield: {cropDetails.averageYield} kg/ha</span>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </motion.div>
+                            <motion.div
+                                initial={{ x: 100, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                transition={{ delay: 0.4 }}
+                            >
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="text-2xl text-blue-700">Prediction Result</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="text-4xl font-bold text-blue-600 mb-4">
+                                            {predictionResult.Predicted_Production} kg/ha
+                                        </div>
+                                        <Progress value={(predictionResult.Predicted_Production / cropDetails.averageYield) * 100} className="h-2 mb-2" />
+                                        <p className="text-sm text-gray-600">Compared to average yield</p>
+                                    </CardContent>
+                                </Card>
+                            </motion.div>
+                        </div>
+                        <motion.div
+                            initial={{ y: 100, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            transition={{ delay: 0.6 }}
+                            className="mt-8"
+                        >
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="text-2xl text-purple-700">Suggestions</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="space-y-2">
+                                        {parseSuggestions(predictionResult.suggestions)}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </motion.div>
+                    </>
+                )}
+            </motion.div>
+        </AnimatePresence>
     );
 };
 

@@ -100,29 +100,31 @@ const Profile = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-10 w-full p-20">
                         <div className="col-span-2">
                             <h3 className="text-lg font-semibold">Crops</h3>
-                            {farmer.crops && farmer.crops.length > 0 ? (
+                            {Array.isArray(farmer.crops) && farmer.crops.length > 0 ? (
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
                                     {farmer.crops.map((crop, index) => (
-                                        <div
-                                            key={index}
-                                            className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 hover:scale-105 transform"
-                                        >
-                                            <div className="flex flex-col items-start gap-2">
-                                                <h3 className="text-xl font-bold text-gray-800 mb-2 flex items-center">
-                                                    <Leaf className="mr-2 text-green-500" /> {crop.name}
-                                                </h3>
-                                                <p className="text-gray-600 flex items-center">
-                                                    <BarChart className="mr-2 text-gray-500" size={18} />
-                                                    Type: {crop.type}
-                                                </p>
-                                                <p className="text-gray-600 flex items-center">
-                                                    <Calendar className="mr-2 text-gray-500" size={18} /> Season: {crop.season}
-                                                </p>
-                                                <p className="text-gray-600 flex items-center">
-                                                    <Lock className="mr-2 text-gray-500" size={18} /> Status: {crop.status || 'Active'} {/* Default to Active if not provided */}
-                                                </p>
+                                        crop && ( // Ensure the crop object is valid
+                                            <div
+                                                key={index}
+                                                className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 hover:scale-105 transform"
+                                            >
+                                                <div className="flex flex-col items-start gap-2">
+                                                    <h3 className="text-xl font-bold text-gray-800 mb-2 flex items-center">
+                                                        <Leaf className="mr-2 text-green-500" /> {crop.name || 'Unknown Crop'} {/* Default to 'Unknown Crop' if name is missing */}
+                                                    </h3>
+                                                    <p className="text-gray-600 flex items-center">
+                                                        <BarChart className="mr-2 text-gray-500" size={18} />
+                                                        Type: {crop.type || 'N/A'} {/* Default to 'N/A' if type is missing */}
+                                                    </p>
+                                                    <p className="text-gray-600 flex items-center">
+                                                        <Calendar className="mr-2 text-gray-500" size={18} /> Season: {crop.season || 'Unknown'} {/* Default to 'Unknown' if season is missing */}
+                                                    </p>
+                                                    <p className="text-gray-600 flex items-center">
+                                                        <Lock className="mr-2 text-gray-500" size={18} /> Status: {crop.status || 'Active'} {/* Default to 'Active' if not provided */}
+                                                    </p>
+                                                </div>
                                             </div>
-                                        </div>
+                                        )
                                     ))}
                                 </div>
                             ) : (
