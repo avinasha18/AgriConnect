@@ -6,7 +6,7 @@ import Home from "../Home";
 import CropDiseaseDetection from "../DiseasePrediction";
 import CropYieldPrediction from "../YieldPrediction";
 import CropRecommendationSystem from "../RecommendationSystem";
-import Dashboard from "../Dashboard/index2";
+import Dashboard from "../Dashboard";
 import VoiceRecognition from "./VoiceRecognition";
 import Profile from "../Profile";
 import MyCrops from "../MyCrops";
