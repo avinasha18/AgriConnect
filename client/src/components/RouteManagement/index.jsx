@@ -14,6 +14,8 @@ import FertilizerData from "../FertilizerData";
 import DetailView from "../RecommendationSystem/DetailView";
 import VoiceInputForm from "../VoiceInputForm";
 import PredictPage from "../YieldPrediction/PredictPage";
+import MarketPrice from "../MarketPrice";
+import MarketPrediction from "../MarketPrice/Price";
 
 const RouteManagement = ({  }) => {
     const location = useLocation();
@@ -45,6 +47,22 @@ const RouteManagement = ({  }) => {
                             element={
                                 <ProtectedRoute nextPath={location.pathname}>
                                     <Dashboard />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path='/market-price'
+                            element={
+                                <ProtectedRoute nextPath={location.pathname}>
+                                    <MarketPrice />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path='/market-predict'
+                            element={
+                                <ProtectedRoute nextPath={location.pathname}>
+                                    <MarketPrediction />
                                 </ProtectedRoute>
                             }
                         />

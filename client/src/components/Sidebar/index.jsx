@@ -96,8 +96,9 @@ const Sidebar = () => {
       setActiveTab('yield');
     } else if (path === '/profile') {
       setActiveTab('profile');
-    }
-    else if(path === '/crops'){
+    } else if (path === '/market-price') {
+      setActiveTab('marketPrice')
+    } else if(path === '/crops'){
       setActiveTab('crops')
     }
   }, [location]);
@@ -122,7 +123,7 @@ const Sidebar = () => {
       <SidebarIcon to='/dashboard' icon={UilApps} active={activeTab === 'dashboard'} text={texts[language].dashboard} expanded={expanded} />
       <SidebarIcon to='/recommendation' icon={UilLightbulbAlt} active={activeTab === 'recommendation'} text={texts[language].recommendation} expanded={expanded} />
       <SidebarIcon to='/disease' icon={UilStethoscope} active={activeTab === 'disease'} text={texts[language].disease} expanded={expanded} />
-      <SidebarIcon to='/price' icon={UilMoneyBill} active={activeTab === 'price'} text={texts[language].price} expanded={expanded} />
+      <SidebarIcon to='/market-price' icon={UilMoneyBill} active={activeTab === 'marketPrice'} text={texts[language].price} expanded={expanded} />
       <SidebarIcon to='/yield' icon={UilAnalytics} active={activeTab === 'yield'} text={texts[language].yield} expanded={expanded} />
 
       {/* Logout Button */}
